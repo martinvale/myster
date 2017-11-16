@@ -121,7 +121,7 @@ public class AssignmentService {
         User user = userRepository.findOne(surveyAssignment.getShopper().getUserId());
         String bodyMessage = getAssignmentBodyMessage(assignment, surveyAssignment.getSurvey(),
                 surveyAssignment.getLocation());
-        mailSender.sendMail(user.getUsername(), "Asignación de encuesta", bodyMessage);
+        mailSender.sendMail(user.getUsername(), "Asignacion de encuesta", bodyMessage);
     }
 
     private String getAssignmentBodyMessage(Assignment assignment, Survey survey, Location location) {
