@@ -1,0 +1,25 @@
+@import "../valo/valo.scss";
+
+@mixin myster {
+  @include valo;
+
+  .v-slot-category {
+    background-color: grey;
+    border-radius: 5px;
+    padding: 3px 6px;
+  }
+
+  .category {
+    color: white;
+    font-size: 18px;
+  }
+
+  .v-slot-survey-item {
+    border-bottom: 1px solid grey;
+    padding-bottom: 8px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+}

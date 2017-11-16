@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "wise-arena-186102",
+  "private_key_id": "458f56fe8f36c13ee41fff17589d0b1e721ea30a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDtzZqPJDyjqemN\n5jYbKf79Quzhxn0ZEkOHIaLJ+hs9I8H11LISGkhxkj7Zgvbj8+UNXaJQasg69KT3\nAy4uE0vP5y/0vjK7UQnAx5lHzbOLh8f9GN4+nfZ67PEFd8u52LQ5/6SUNqVADV9C\n4sgzmNDo7RAq4rwCcs5Z9QmvgtFe2/zoaExoxKSTeKV6ZfJmHn1lZHukaW6z6PnO\nZsXBWpSpLOg6WLGHbASEcAUmYwd5I9LKCNjscfKrYo6/vEk4cOx/G92sa+JCuMK+\npPFCgdBzjpBgUx8Sv+CoqWPUMMqe4JdUOo4IAZzbuMqTb7bwX7myMo9GVPMdx4Z4\n3mbHQj5ZAgMBAAECggEAPDCqSkjVwGclYnE+iKmcjOX/pzXiPBJPXUi6N31Cn7sJ\nQPvRBpv4ciaeGdf4PcJh23wztT8R5zo89virG6ZurfTKQpxRou/kFBNxTKdYJpz7\nlahRuG+rD3ohl0y3GBctpvB567nZIdlAn2FfYw/u8MXwLaquA8CjUkmfZfkqnWN8\nPKlQx9xqUFLlVU+QuhdZitMcbZVtV0vAfhWgxqOlzLoJ48l8hKPDpYOrUE70QFhE\nHcP5hYKyexiqbU26Qdh6qUTJKkAvpPes8+0kXSPfQVGdagDfIkNOQBIVhSZIgijm\nk10MOGV2/DRxJfPnUuiS1qTfs1j1zIiszCj7lfOLcQKBgQD32JEatgusjbfT7pF5\nKBlCCZZ3X/GTqsdbHN+3dbjcA0/NVYYy3NhzdMx7eeb0aht5lKKETqeNp81PhpgM\nFBRqnaikM3YhE5DyH0ti+zl32nq6pNDEf52kQ0VtvDI2kEZpUJ5RcZZrUlLM+r06\ndN63f6QrIAq48sTj5IDXpbxx3wKBgQD1oHQIAuSkHj3sJjTOCR2PR5vHY7zDsKdF\nhmgFxbrW1CoqytfMidq9DkqR8jTEHXhCpTGfeT4EgAvu0Y3OZwz9UQHZH+woMjDc\nHFLSlHFz/QHUMe+5aFD1aiN9PEunvhUy8tM+6Tx47yP6mK5Un09Jscn8zs5wKO9a\nthrkpTWGxwKBgDyfLi7YZFaae2JNMivuUO9EJReh0hcKaKSylU3sb4DxFm3lA2Qh\nfJgQ84soMAOMiJfecTnnezg82Q0goMQjjTLeyUcQh05j2MpAOVJGnLHiMK7CbYYC\nqO5qveqvY6DQ/Uf5PiAxplct1a7pjatktq0vfVpHBhhi2SHc3F7i3QsFAoGBAN0D\npaRXxhgOxjUpI7aI6To1euxsyDtlRv3+NLeM9dO8ULz0jD0Vhec7ZsnwIJ6ezcla\nD06pr64o8ZPQp0Kj40JEk98lJD/++Yv1SGkG/Rca/3xJ+qTgQoixGoHjsUeceELB\n0Gb5Q1qmA7/HhoXKW3O6MD/0bjjp/IWo+oXmSkWdAoGBAMBYNv54+Jk5Q2Kc9hhp\nNQoH11h9+qoK2wThimusYMIq9ysTSvgiU+Rezbmsctg37XI734m1gUARKTUZbwSJ\nbTQ2xU19mTSy3DRmTln372tbxukObGQLFodkJmUOhEIRMj0wbVyGZDVMGrxqOytd\ng8nNIgEomcvsOAs6V9uHgRHu\n-----END PRIVATE KEY-----\n",
+  "client_email": "myster@wise-arena-186102.iam.gserviceaccount.com",
+  "client_id": "116070189550298066394",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/myster%40wise-arena-186102.iam.gserviceaccount.com"
+}

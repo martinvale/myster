@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xsi:schemaLocation="
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+      http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <jpa:repositories base-package="com.ibiscus.myster.repository" />
+
+    <bean id="surveyService" class="com.ibiscus.myster.service.survey.SurveyServiceImpl">
+        <constructor-arg index="0" ref="surveyRepository"/>
+        <constructor-arg index="1" ref="itemOptionRepository"/>
+        <constructor-arg index="2" ref="responseRepository"/>
+    </bean>
+
+    <bean id="itemOptionService" class="com.ibiscus.myster.service.survey.item.ItemOptionService">
+        <constructor-arg ref="itemOptionRepository"/>
+    </bean>
+
+    <bean id="choiceService" class="com.ibiscus.myster.service.survey.item.choice.ChoiceService">
+        <constructor-arg index="0" ref="choiceRepository"/>
+    </bean>
+
+    <bean id="userService" class="com.ibiscus.myster.service.security.UserServiceImpl">
+        <constructor-arg index="0" ref="userRepository"/>
+    </bean>
+
+    <bean id="shopperService" class="com.ibiscus.myster.service.shopper.ShopperServiceImpl">
+        <constructor-arg index="0" ref="shopperRepository"/>
+    </bean>
+</beans>

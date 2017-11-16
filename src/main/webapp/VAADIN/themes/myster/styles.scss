@@ -1,0 +1,7 @@
+@import "addons.scss";
+@import "myster.scss";
+
+.myster {
+  @include addons;
+  @include myster;
+}

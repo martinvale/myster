@@ -1,0 +1,120 @@
+create table survey (
+  id bigint not null auto_increment,
+  name varchar(100),
+  enabled bit(1),
+  primary key(id)
+);
+
+create table category (
+  id bigint not null auto_increment,
+  survey_id bigint not null,
+  name varchar(100) not null,
+  position int not null,
+  primary key(id),
+  constraint fk_category_survey_id foreign key fk_category_survey_id (survey_id) references survey(id)
+);
+
+create table survey_item (
+  id bigint not null auto_increment,
+  category_id bigint not null,
+  position int not null,
+  title varchar(2000) not null,
+  description varchar(2000) default null,
+  type varchar(20) not null,
+  primary key(id),
+  constraint fk_survey_item_category_id foreign key fk_survey_item_category_id (category_id) references category(id)
+);
+
+create table choice (
+  id bigint not null auto_increment,
+  item_option_id bigint not null,
+  description varchar(2000) not null,
+  value varchar(100) not null,
+  primary key(id),
+  constraint fk_item_option foreign key fk_item_option (item_option_id) references single_choice(id)
+);
+
+create table user (
+  id bigint not null auto_increment,
+  username varchar(100) not null,
+  password varchar(50) not null,
+  enabled bit(1),
+  primary key(id)
+);
+
+create table shopper (
+  id bigint not null auto_increment,
+  user_id bigint not null,
+  first_name varchar(70) not null,
+  last_name varchar(70) not null,
+  primary key(id),
+  constraint fk_user foreign key fk_user (user_id) references user(id)
+);
+
+create table assignment (
+  id bigint not null auto_increment,
+  shopper_id bigint not null,
+  survey_id bigint not null,
+  location_id bigint not null,
+  state varchar(10) not null,
+  visit_date date default null,
+  in_time time default null,
+  out_time time default null,
+  primary key(id),
+  constraint fk_shopper foreign key fk_shopper (shopper_id) references shopper(id),
+  constraint fk_survey foreign key fk_survey (survey_id) references survey(id),
+  constraint fk_location foreign key fk_location (location_id) references location(id)
+);
+
+create table company (
+  id bigint not null auto_increment,
+  name varchar(100) not null,
+  primary key(id)
+);
+
+create table location (
+  id bigint not null auto_increment,
+  company_id bigint not null,
+  address varchar(1000) not null,
+  primary key(id),
+  constraint fk_company foreign key fk_company (company_id) references company(id)
+);
+
+create table response (
+  id bigint not null auto_increment,
+  assignment_id bigint not null,
+  survey_item_id bigint not null,
+  value varchar(2000) not null,
+  primary key(id),
+  constraint fk_assigment foreign key fk_assignment (assignment_id) references assignment(id),
+  constraint fk_survey_item foreign key fk_survey_item (survey_item_id) references survey_item(id)
+);
+
+insert into user (username, password, enabled) values ('noelice@msn.com', 'noelice', 1);
+insert into shopper (user_id, first_name, last_name) select id, 'Noelice', 'Correia de Oliveira' from user where username = 'noelice@msn.com';
+
+insert into survey(name, enabled) values ('Carrefour', 1);
+
+insert into category (survey_id, name) select id, 'Exterior de la tienda' from survey where name = 'Carrefour';
+insert into category (survey_id, name) select id, 'Interior de la tienda' from survey where name = 'Carrefour';
+insert into category (survey_id, name) select id, 'Salon de venta' from survey where name = 'Carrefour';
+insert into category (survey_id, name) select id, 'Caja' from survey where name = 'Carrefour';
+insert into category (survey_id, name) select id, 'Evaluacion subjetiva' from survey where name = 'Carrefour';
+
+insert into survey_item (survey_id, title, description, type) select id,
+    '¿La vereda de la tienda se encontraba limpia y en buen estado?',
+    'La vereda debe estar limpia, sin basura. No debe haber baldosas rotas.', 'SINGLE_CHOICE'
+    from survey where name = 'Carrefour';
+insert into choice(item_option_id, description, value) select id, 'Si', '1' from survey_item
+    where title = '¿La vereda de la tienda se encontraba limpia y en buen estado?';
+insert into choice(item_option_id, description, value) select id, 'No', '0' from survey_item
+    where title = '¿La vereda de la tienda se encontraba limpia y en buen estado?';
+
+insert into survey_item (survey_id, title, description, type) select id,
+    'Comentarios generales:', null, 'TEXT' from survey where name = 'Carrefour';
+insert into survey_item (category_id, position, title, description, type) select id, 1,
+    'Archivos adjuntos:', null, 'FILE' from category where name = 'Evaluacion subjetiva';
+
+
+insert into assignment (shopper_id, survey_id, location_id, state) values (1, 2, 1, 'PENDING');
+insert into response (assignment_id, item_option_id) values (1, 1);
