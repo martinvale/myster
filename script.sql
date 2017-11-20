@@ -91,15 +91,16 @@ create table response (
 );
 
 insert into user (username, password, enabled) values ('noelice@msn.com', 'noelice', 1);
+insert into user (username, password, enabled) values ('martinvalletta@gmail.com', 'martin', 1);
 insert into shopper (user_id, first_name, last_name) select id, 'Noelice', 'Correia de Oliveira' from user where username = 'noelice@msn.com';
 
 insert into survey(name, enabled) values ('Carrefour', 1);
 
-insert into category (survey_id, name) select id, 'Exterior de la tienda' from survey where name = 'Carrefour';
-insert into category (survey_id, name) select id, 'Interior de la tienda' from survey where name = 'Carrefour';
-insert into category (survey_id, name) select id, 'Salon de venta' from survey where name = 'Carrefour';
-insert into category (survey_id, name) select id, 'Caja' from survey where name = 'Carrefour';
-insert into category (survey_id, name) select id, 'Evaluacion subjetiva' from survey where name = 'Carrefour';
+insert into category (survey_id, name, position) select id, 'Exterior de la tienda', 1 from survey where name = 'Carrefour';
+insert into category (survey_id, name, position) select id, 'Interior de la tienda', 2 from survey where name = 'Carrefour';
+insert into category (survey_id, name, position) select id, 'Salon de venta', 3 from survey where name = 'Carrefour';
+insert into category (survey_id, name, position) select id, 'Caja', 4 from survey where name = 'Carrefour';
+insert into category (survey_id, name, position) select id, 'Evaluacion subjetiva', 5 from survey where name = 'Carrefour';
 
 insert into survey_item (survey_id, title, description, type) select id,
     '¿La vereda de la tienda se encontraba limpia y en buen estado?',
