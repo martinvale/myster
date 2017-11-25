@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 
 import com.ibiscus.myster.model.security.AbstractProfile;
 
-@Entity
+@Entity(name = "shopper")
 public class Shopper extends AbstractProfile {
 
     @Column(name = "first_name")

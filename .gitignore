@@ -1,4 +1,5 @@
 myster.iml
 .idea/
 target/
-survey*
+survey_files/
+survey.html
