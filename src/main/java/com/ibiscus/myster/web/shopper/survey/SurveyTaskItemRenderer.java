@@ -128,9 +128,9 @@ public class SurveyTaskItemRenderer implements Visitor {
         surveyItemContainer.addStyleName("survey-item");
         container.addComponent(surveyItemContainer);
 
-        File file = fileTaskItem.getFile();
-        surveyItemContainer.addComponent(new Label(file.getTitle()));
-        Label description = new Label(file.getDescription());
+        FileItem fileItem = fileTaskItem.getFile();
+        surveyItemContainer.addComponent(new Label(fileItem.getTitle()));
+        Label description = new Label(fileItem.getDescription());
         description.setStyleName("description");
         surveyItemContainer.addComponent(description);
 
@@ -148,7 +148,7 @@ public class SurveyTaskItemRenderer implements Visitor {
 
         surveyItemContainer.addComponent(image);
 
-        taskItems.add(new SimpleFieldSurveyTaskResponse(file.getId(), imageUploader));
+        taskItems.add(new SimpleFieldSurveyTaskResponse(fileItem.getId(), imageUploader));
     }
 
     public List<SurveyTaskResponse> getTaskItems() {

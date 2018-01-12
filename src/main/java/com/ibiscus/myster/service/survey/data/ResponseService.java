@@ -6,12 +6,11 @@ import com.ibiscus.myster.model.survey.SurveyTask;
 import com.ibiscus.myster.model.survey.TaskCategory;
 import com.ibiscus.myster.model.survey.data.Response;
 import com.ibiscus.myster.model.survey.item.AbstractSurveyItem;
-import com.ibiscus.myster.model.survey.item.File;
+import com.ibiscus.myster.model.survey.item.FileItem;
 import com.ibiscus.myster.model.survey.item.SurveyValue;
 import com.ibiscus.myster.repository.assignment.AssignmentRepository;
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.repository.survey.data.ResponseRepository;
-import com.ibiscus.myster.repository.survey.data.ResponseSpecification;
 import com.ibiscus.myster.repository.survey.item.ItemOptionRepository;
 import com.ibiscus.myster.service.communication.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +40,6 @@ public class ResponseService {
     private ItemOptionRepository itemOptionRepository;
 
     @Autowired
-    private DatastoreService datastoreService;
-
-    @Autowired
     private MailSender mailSender;
 
     private final String siteUrl = "http://localhost:8080/";
@@ -62,9 +58,9 @@ public class ResponseService {
             Response response;
             if (responseValue.isPresent()) {
                 AbstractSurveyItem surveyItem = itemOptionRepository.findOne(surveyValue.getSurveyItemId());
-                if (surveyItem instanceof File) {
+                /*if (surveyItem instanceof FileItem) {
                     value = datastoreService.save(value);
-                }
+                }*/
                 response = new Response(responseValue.get().getId(), assignmentId, surveyValue.getSurveyItemId(),
                         value);
             } else {

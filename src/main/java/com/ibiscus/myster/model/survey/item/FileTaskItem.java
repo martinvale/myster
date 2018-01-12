@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public class FileTaskItem extends SurveyTaskItem {
 
-    private final File file;
+    private final FileItem file;
 
-    public FileTaskItem(File file, Optional<String> itemValue) {
+    public FileTaskItem(FileItem fileItem, Optional<String> itemValue) {
         super(itemValue);
-        this.file = file;
+        this.file = fileItem;
     }
 
     @Override
@@ -19,7 +19,7 @@ public class FileTaskItem extends SurveyTaskItem {
         visitor.visit(this);
     }
 
-    public File getFile() {
+    public FileItem getFile() {
         return file;
     }
 }

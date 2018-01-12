@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <div th:fragment="body" class="row">
+    <div class="col-lg-6">
+      <textarea class="form-control" rows="5" th:name="|completedSurveyItems[${item.index}].value|" th:text="${item.value}"></textarea>
+    </div>
+  </div>
+</body>
+</html>

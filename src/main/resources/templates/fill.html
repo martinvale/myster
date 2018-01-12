@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Myster :: Survey</title>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"></link>
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"></link>
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></link>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!--script src="https://unpkg.com/vue"></script-->
+</head>
+<body>
+  <div id="assignment" class="panel panel-default">
+    <div class="panel-body">
+      <form action="#" th:action="@{{assignmentId}(assignmentId=${survey.assignmentId})}" th:object="${survey}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{assignmentId}" />
+        <div class="panel">
+          <p><label>Cliente:</label> <span th:text="${survey.taskDescription.clientName}">Carrefour</span></p>
+          <p><label>Direccion:</label> <span th:text="${survey.taskDescription.address}">Acoyte 600</span></p>
+          <p><label>Honorarios:</label> $<span th:text="${survey.taskDescription.payRate}">100</span></p>
+          <div class="form-group row">
+            <div class="col-xs-2">
+              <label>Fecha:</label>
+              <input id="fill-date" name="visitDate" type="text" class="form-control" style="position: relative; z-index: 100000;" th:value="*{#dates.format(visitDate, 'dd/MM/yyyy')}"></input>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-2">
+              <label>Hora de llegada:</label>
+              <div class="input-group">
+                <select name="inHour" class="form-control">
+                  <option disabled="disabled" th:selected="${survey.inHour == null}" value="">HH</option>
+                  <option th:each="i : ${#numbers.sequence(0, 23)}"
+                      th:text="${#numbers.formatInteger(i, 2)}" th:selected="${#strings.startsWith(survey.inHour?:'', #numbers.formatInteger(i, 2))}">0</option>
+                </select>
+                <span class="input-group-addon"> : </span>
+                <select name="inMinute" class="form-control js-time-selector">
+                  <option disabled="disabled" th:selected="${survey.inMinute == null}" value="">MM</option>
+                  <option th:each="i : ${#numbers.sequence(0, 59)}"
+                      th:text="${#numbers.formatInteger(i, 2)}" th:selected="${#strings.endsWith(survey.inMinute?:'', #numbers.formatInteger(i, 2))}">0</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-2">
+              <label>Hora de salida:</label>
+              <div class="input-group">
+                <select name="outHour" class="form-control">
+                  <option disabled="disabled" th:selected="${survey.outHour == null}" value="">HH</option>
+                  <option th:each="i : ${#numbers.sequence(0, 23)}"
+                      th:text="${#numbers.formatInteger(i, 2)}" th:selected="${#strings.startsWith(survey.outHour?:'', #numbers.formatInteger(i, 2))}">0</option>
+                </select>
+                <span class="input-group-addon"> : </span>
+                <select name="outMinute" class="form-control js-time-selector">
+                  <option disabled="disabled" th:selected="${survey.outMinute == null}" value="">MM</option>
+                  <option th:each="i : ${#numbers.sequence(0, 59)}"
+                      th:text="${#numbers.formatInteger(i, 2)}" th:selected="${#strings.endsWith(survey.outMinute?:'', #numbers.formatInteger(i, 2))}">0</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div th:each="category : ${survey.categories}" class="category panel panel-default">
+          <div class="panel-heading"><h3 class="panel-title" th:text="${category.name}">Interior de la tienda</h3></div>
+          <div class="panel-body">
+            <div th:each="item : ${category.items}" class="panel">
+              <input type="hidden" th:name="|completedSurveyItems[${item.index}].surveyItemId|" th:value="${item.id}"></input>
+              <p th:text="${item.title}">¿El ingreso a la tienda estaba libre de obstrucciones? (requerido)</p>
+              <div th:include="${item.type} :: body"></div>
+              <div class="alert alert-info padding-xs" th:if="${item.description}">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span th:text="${item.description}">No debe haber en el ingreso carros, cajones, caddies sin mercadería. NADA que obstaculice el ingreso y la libre circulación.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-default">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="text/javascript" th:inline="javascript">
+  /*<![CDATA[*/
+
+    jQuery(document).ready(function() {
+      jQuery("#fill-date").datepicker({
+        dateFormat: "dd/mm/yy"
+      });
+
+      jQuery(".js-time-selector").change(function(event) {
+        var index = this.id.substr(10);
+        var minute;
+        var second;
+        if (this.id.startsWith('js-minute-')) {
+          minute = this.value;
+          second = jQuery("#js-second-" + index).val();
+        } else {
+          second = this.value;
+          minute = jQuery("#js-minute-" + index).val();
+        }
+        jQuery("input[name='completedSurveyItems[" + index + "].value']")
+            .val(minute + '-' + second);
+      });
+    });
+
+    /*Vue.component('category-item', {
+      props: ['category']
+    });
+
+    Vue.component('item-item', {
+      props: ['item']
+    });
+
+    var app = new Vue({
+      el: '#assignment',
+      data: {
+        categories: [[${survey.categories}]]
+      },
+      methods: {
+        updateTimeValue: function (index, field) {
+          alert(index + ' - ' + field);
+        }
+      }
+    })*/
+
+  /*]]>*/
+  </script>
+</body>
+</html>

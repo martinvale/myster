@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <div th:fragment="body" class="row">
+    <div class="col-lg-2">
+      <div class="input-group">
+        <input type="hidden" th:name="|completedSurveyItems[${item.index}].value|" th:value="${item.value}"></input>
+        <select th:id="|js-minute-${item.index}|" class="form-control js-time-selector">
+          <option disabled="disabled" th:selected="${item.value == null}" value="">MM</option>
+          <option th:each="i : ${#numbers.sequence( 0, 59)}"
+              th:text="${#numbers.formatInteger(i, 2)}" th:selected="${#strings.startsWith(item.value?:'', #numbers.formatInteger(i, 2))}">0</option>
+        </select>
+        <span class="input-group-addon"> : </span>
+        <select th:id="|js-second-${item.index}|" class="form-control js-time-selector">
+          <option disabled="disabled" th:selected="${item.value == null}" value="">SS</option>
+          <option th:each="i : ${#numbers.sequence( 0, 59)}"
+              th:text="${#numbers.formatInteger(i, 2)}" th:selected="${#strings.endsWith(item.value?:'', #numbers.formatInteger(i, 2))}">0</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

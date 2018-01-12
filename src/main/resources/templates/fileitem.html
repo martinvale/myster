@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <div th:fragment="body">
+    <input type="file" th:name="|completedSurveyItems[${item.index}].file|" class="form-control"></input>
+    <div class="row" style="margin-top: 10px">
+      <div class="col-xs-6 col-md-3">
+        <div class="thumbnail">
+          <img th:src="|https://storage.googleapis.com/myster/${item.value}" th:if="${item.value} != null" />
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

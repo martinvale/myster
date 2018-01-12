@@ -1,5 +1,8 @@
-myster.iml
-.idea/
 target/
+!.mvn/wrapper/maven-wrapper.jar
+.idea
+*.iws
+*.iml
+*.ipr
 survey_files/
 survey.html

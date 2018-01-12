@@ -13,7 +13,7 @@ public class SurveyItemDtoFactory {
             return new NumberItemDto(surveyItem);
         } else if (surveyItem instanceof TimeItem) {
             return new TimeItemDto(surveyItem);
-        } else if (surveyItem instanceof File) {
+        } else if (surveyItem instanceof FileItem) {
             return new FileItemDto(surveyItem);
         }
         throw new IllegalArgumentException("Cannot create DTO object for class: " + surveyItem.getClass().getName());

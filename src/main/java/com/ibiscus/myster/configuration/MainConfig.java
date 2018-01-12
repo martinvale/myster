@@ -1,5 +1,7 @@
 package com.ibiscus.myster.configuration;
 
+import com.ibiscus.myster.service.survey.data.DatastoreService;
+import com.ibiscus.myster.service.survey.data.GoogleDatastoreService;
 import com.ibiscus.myster.service.survey.data.ResponseService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

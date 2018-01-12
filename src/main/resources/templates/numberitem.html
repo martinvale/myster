@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <div th:fragment="body" class="row">
+    <div class="col-lg-2">
+      <input type="number" th:name="|completedSurveyItems[${item.index}].value|" th:value="${item.value}" class="form-control"></input>
+    </div>
+  </div>
+</body>
+</html>

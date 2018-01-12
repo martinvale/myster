@@ -3,15 +3,15 @@ package com.ibiscus.myster.model.survey.item;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-@Entity(name = "File")
+@Entity(name = "FileItem")
 @DiscriminatorValue("FILE")
-public class File extends AbstractSurveyItem {
+public class FileItem extends AbstractSurveyItem {
 
-    File() {
+    FileItem() {
         super();
     }
 
-    public File(long id, long categoryId, int position, String title, String description) {
+    public FileItem(long id, long categoryId, int position, String title, String description) {
         super(id, categoryId, position, title, description, ItemType.FILE);
     }
 }
