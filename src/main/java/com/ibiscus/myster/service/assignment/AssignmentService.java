@@ -70,7 +70,7 @@ public class AssignmentService {
         return assignmentDescriptors;
     }
 
-    public SurveyTask getTask(long id) {
+    public SurveyTask2 getTask(long id) {
         Assignment assignment = get(id);
         Survey survey = assignment.getSurvey();
         List<TaskCategory> taskCategories = newArrayList();
@@ -113,11 +113,11 @@ public class AssignmentService {
         if (assignment.getOutTime() != null) {
             outTime = assignment.getOutTime().toLocalTime();
         }
-        return new SurveyTask(taskDescription, taskCategories, visitDate, inTime, outTime);
+        return new SurveyTask2(taskDescription, taskCategories, visitDate, inTime, outTime);
     }
 
-    public SurveyDto getSurvey(long id) {
-        Assignment assignment = get(id);
+    public SurveyTask getSurveyTask(long assignmentId) {
+        Assignment assignment = get(assignmentId);
         Survey survey = assignment.getSurvey();
         List<CategoryDto> taskCategories = newArrayList();
         List<Category> categories = categoryRepository.findBySurveyId(survey.getId());
@@ -163,7 +163,7 @@ public class AssignmentService {
         if (assignment.getOutTime() != null) {
             outTime = assignment.getOutTime().toLocalTime();
         }
-        return new SurveyDto(id, taskDescription, taskCategories, visitDate, inTime, outTime);
+        return new SurveyTask(assignmentId, taskDescription, taskCategories, visitDate, inTime, outTime);
     }
 
     public Assignment get(long id) {

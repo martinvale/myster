@@ -2,7 +2,7 @@ package com.ibiscus.myster.web.shopper.survey;
 
 import java.util.List;
 
-import com.ibiscus.myster.model.survey.SurveyTask;
+import com.ibiscus.myster.model.survey.SurveyTask2;
 import com.ibiscus.myster.model.survey.item.SurveyValue;
 import com.ibiscus.myster.service.survey.data.DatastoreService;
 import com.ibiscus.myster.service.survey.data.ResponseService;
@@ -33,11 +33,11 @@ public class FillSurveyView implements View {
     @SuppressWarnings("serial")
     public void enter(ViewChangeEvent event) {
         long assignmentId = Long.valueOf(event.getParameters());
-        SurveyTask surveyTask = assigmentService.getTask(assignmentId);
+        SurveyTask2 surveyTask = assigmentService.getTask(assignmentId);
         pageLayout.addComponent(new FillSurveyForm(datastoreService, surveyTask, false) {
 
             @Override
-            public void onSave(SurveyTask surveyTask, List<SurveyValue> surveyValues) {
+            public void onSave(SurveyTask2 surveyTask, List<SurveyValue> surveyValues) {
                 responseService.fill(assignmentId, surveyTask, surveyValues);
                 UI.getCurrent().getNavigator().navigateTo("home");
             }

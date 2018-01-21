@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ibiscus.myster.service.survey.SurveyService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,10 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ibiscus.myster.model.survey.Survey;
 import com.ibiscus.myster.model.survey.item.Choice;
-import com.ibiscus.myster.model.survey.item.SurveyItem;
-import com.ibiscus.myster.model.survey.item.SingleChoice;
 import com.ibiscus.myster.service.survey.SurveyBuilder;
-import com.ibiscus.myster.service.survey.SurveyService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:services.xml", "classpath:persistence.xml"})

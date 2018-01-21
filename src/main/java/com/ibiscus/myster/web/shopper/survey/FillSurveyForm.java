@@ -1,6 +1,6 @@
 package com.ibiscus.myster.web.shopper.survey;
 
-import com.ibiscus.myster.model.survey.SurveyTask;
+import com.ibiscus.myster.model.survey.SurveyTask2;
 import com.ibiscus.myster.model.survey.SurveyTaskItem;
 import com.ibiscus.myster.model.survey.TaskCategory;
 import com.ibiscus.myster.model.survey.TaskDescription;
@@ -21,9 +21,9 @@ public abstract class FillSurveyForm extends VerticalLayout {
 
     private final SurveyTaskItemRenderer renderer;
 
-    private final Binder<SurveyTask> binder = new Binder<SurveyTask>(SurveyTask.class);
+    private final Binder<SurveyTask2> binder = new Binder<SurveyTask2>(SurveyTask2.class);
 
-    public FillSurveyForm(DatastoreService datastoreService, SurveyTask surveyTask, boolean readOnly) {
+    public FillSurveyForm(DatastoreService datastoreService, SurveyTask2 surveyTask, boolean readOnly) {
         super();
         setEnabled(!readOnly);
         renderer = new SurveyTaskItemRenderer(datastoreService, this);
@@ -113,7 +113,7 @@ public abstract class FillSurveyForm extends VerticalLayout {
         onSave(binder.getBean(), surveyTaskItems);
     }
 
-    public abstract void onSave(SurveyTask surveyTask, List<SurveyValue> surveyValues);
+    public abstract void onSave(SurveyTask2 surveyTask, List<SurveyValue> surveyValues);
 
     public abstract void onFinish();
 

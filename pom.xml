@@ -16,7 +16,6 @@
         <junit.version>4.12</junit.version>
         <spring.version>4.3.10.RELEASE</spring.version>
         <vaadin.version>8.1.3</vaadin.version>
-        <!-- jetty.version>8.1.8.v20121106</jetty.version-->
         <jetty.version>9.3.9.v20160517</jetty.version>
         <appengine.target.version>1.9.59</appengine.target.version>
         <INSTANCE_CONNECTION_NAME>wise-arena-186102:us-central1:myster</INSTANCE_CONNECTION_NAME>

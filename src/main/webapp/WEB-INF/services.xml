@@ -8,7 +8,7 @@
 
     <jpa:repositories base-package="com.ibiscus.myster.repository" />
 
-    <bean id="surveyService" class="com.ibiscus.myster.service.survey.SurveyServiceImpl">
+    <bean id="surveyService" class="com.ibiscus.myster.service.survey.SurveyService">
         <constructor-arg index="0" ref="surveyRepository"/>
         <constructor-arg index="1" ref="itemOptionRepository"/>
         <constructor-arg index="2" ref="responseRepository"/>

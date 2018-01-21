@@ -7,11 +7,10 @@ import java.util.Optional;
 
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.service.assignment.AssignmentService;
-import com.ibiscus.myster.service.shopper.ShopperService;
+import com.ibiscus.myster.service.survey.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ibiscus.myster.model.survey.Survey;
-import com.ibiscus.myster.service.survey.SurveyService;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
@@ -47,7 +46,7 @@ public class SurveyView implements View {
     @SuppressWarnings("serial")
     @Override
     public Component getViewComponent() {
-        surveys = newArrayList(surveyService.findAll());
+        surveys = newArrayList();
         final ListDataProvider<Survey> dataProvider = new ListDataProvider<Survey>(surveys);
         VerticalLayout pageLayout = new VerticalLayout();
 
@@ -57,12 +56,12 @@ public class SurveyView implements View {
             public boolean onSave(SurveyDto surveyDto) {
                 Survey survey = surveyDto.toSurvey();
                 surveyService.save(survey);
-                if (surveyDto.isNew()) {
+                /*if (surveyDto.isNew()) {
                     surveys.add(survey);
                     dataProvider.refreshAll();
                 } else {
                     dataProvider.refreshItem(survey);
-                }
+                }*/
                 return true;
             }
 

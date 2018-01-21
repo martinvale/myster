@@ -2,11 +2,10 @@ package com.ibiscus.myster.service.survey.data;
 
 import com.ibiscus.myster.model.shopper.Shopper;
 import com.ibiscus.myster.model.survey.Assignment;
-import com.ibiscus.myster.model.survey.SurveyTask;
+import com.ibiscus.myster.model.survey.SurveyTask2;
 import com.ibiscus.myster.model.survey.TaskCategory;
 import com.ibiscus.myster.model.survey.data.Response;
 import com.ibiscus.myster.model.survey.item.AbstractSurveyItem;
-import com.ibiscus.myster.model.survey.item.FileItem;
 import com.ibiscus.myster.model.survey.item.SurveyValue;
 import com.ibiscus.myster.repository.assignment.AssignmentRepository;
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
@@ -44,7 +43,7 @@ public class ResponseService {
 
     private final String siteUrl = "http://localhost:8080/";
 
-    public void fill(long assignmentId, SurveyTask surveyTask, List<SurveyValue> values) {
+    public void fill(long assignmentId, SurveyTask2 surveyTask, List<SurveyValue> values) {
         Assignment assignment = assignmentRepository.findOne(assignmentId);
         Assignment filledAssignment = new Assignment(assignmentId, assignment.getSurvey(), assignment.getShopperId(),
                 assignment.getLocation(), Date.valueOf(surveyTask.getVisitDate()),
