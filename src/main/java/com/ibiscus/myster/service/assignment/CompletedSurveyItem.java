@@ -2,13 +2,15 @@ package com.ibiscus.myster.service.assignment;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public class CompletedSurveyItem {
 
     private long surveyItemId;
 
     private String value;
 
-    private MultipartFile file;
+    private List<MultipartFile> files;
 
     public long getSurveyItemId() {
         return surveyItemId;
@@ -26,11 +28,11 @@ public class CompletedSurveyItem {
         this.value = value;
     }
 
-    public MultipartFile getFile() {
-        return file;
+    public List<MultipartFile> getFiles() {
+        return files;
     }
 
-    public void setFile(MultipartFile file) {
-        this.file = file;
+    public void setFile(List<MultipartFile> files) {
+        this.files = files;
     }
 }

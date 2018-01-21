@@ -2,14 +2,69 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
   <div th:fragment="body">
-    <input type="file" th:name="|completedSurveyItems[${item.index}].file|" class="form-control"></input>
-    <div class="row" style="margin-top: 10px">
-      <div class="col-xs-6 col-md-3">
-        <div class="thumbnail">
-          <img th:src="|https://storage.googleapis.com/myster/${item.value}" th:if="${item.value} != null" />
+    <div id="files">
+      <div v-for="fileInput in fileInputs" class="row" style="margin-top: 5px">
+        <div class="col-md-8">
+          <div class="input-group">
+            <input type="file" th:name="|completedSurveyItems[${item.index}].file|" class="form-control"></input>
+            <span class="input-group-btn">
+            <button type="button" class="btn btn-default js-delete-file" v-on:click="removeFileInput(fileInput.id)">
+              <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+            </button>
+          </span>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 5px">
+        <div class="col-md-8">
+          <button type="button" class="btn btn-default pull-right js-add-file" v-on:click="addFileInput">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </button>
         </div>
       </div>
     </div>
+    <div class="row" style="margin-top: 10px">
+      <div th:each="fileUrl : ${item.files}" class="col-xs-6 col-md-3">
+        <div class="thumbnail">
+          <img th:src="|https://storage.googleapis.com/myster/${fileUrl}" />
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+
+      jQuery(document).ready(function() {
+          var app = new Vue({
+            el: '#files',
+            data: {
+              idGenerator: 1,
+              fileInputs: [{id: 0}],
+              files: /*[[${item.files}]]*/
+            },
+            methods: {
+              findIndexById: function(id) {
+                for (var i = 0; i < this.fileInputs.length; i++) {
+                  if (this.fileInputs[i].id == id) {
+                    return i;
+                  }
+                }
+                return null;
+              },
+              addFileInput: function () {
+                this.fileInputs.push({id: this.idGenerator++});
+              },
+              removeFileInput: function (id) {
+                var index = this.findIndexById(id);
+                if (index) {
+                  this.fileInputs.splice(index, 1);
+                }
+              }
+            }
+          });
+      });
+
+    /*]]>*/
+    </script>
   </div>
 </body>
 </html>

@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import com.ibiscus.myster.model.company.Location;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ibiscus.myster.repository.assignment.AssignmentRepository;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -140,7 +142,7 @@ public class AssignmentService {
                     taskItems.add(new SingleChoiceDto(item.getId(), item.getClass().getSimpleName(), item.getTitle(),
                             item.getDescription(), value, index++, response.isPresent(), choicesDtos));
                 } else if (item instanceof FileItem) {
-                    taskItems.add(new SurveyItemDto(item.getId(), item.getClass().getSimpleName(), item.getTitle(),
+                    taskItems.add(new FilesDto(item.getId(), item.getClass().getSimpleName(), item.getTitle(),
                             item.getDescription(), value, index++, response.isPresent()));
                 } else {
                     taskItems.add(new SurveyItemDto(item.getId(), item.getClass().getSimpleName(), item.getTitle(),
@@ -188,7 +190,7 @@ public class AssignmentService {
                 Time.valueOf(LocalTime.of(completedSurvey.getOutHour(), completedSurvey.getOutMinute())));
         assignmentRepository.save(filledAssignment);
         completedSurvey.getCompletedSurveyItems().stream()
-                .filter(completedSurveyItem -> !StringUtils.isBlank(completedSurveyItem.getValue()) || completedSurveyItem.getFile() != null)
+                .filter(completedSurveyItem -> !StringUtils.isBlank(completedSurveyItem.getValue()) || completedSurveyItem.getFiles() != null)
                 .forEach(completedSurveyItem -> save(completedSurvey.getAssignmentId(), completedSurveyItem));
     }
 
@@ -197,9 +199,12 @@ public class AssignmentService {
         Optional<Response> responseValue = Optional.ofNullable(
                 responseRepository.findByAssignment(assignmentId,
                         completedSurveyItem.getSurveyItemId()));
-        if (completedSurveyItem.getFile() != null) {
-            completedSurveyItem.setValue(datastoreService.save("shopncheck/" + assignmentId + "/"
-                    + completedSurveyItem.getFile()));
+        if (completedSurveyItem.getFiles() != null) {
+            StringJoiner fileValues = new StringJoiner(",");
+            for (MultipartFile file : completedSurveyItem.getFiles()) {
+                fileValues.add(datastoreService.save("shopncheck/" + assignmentId + "/", file));
+            }
+            completedSurveyItem.setValue(fileValues.toString());
         }
 
         Response response;
