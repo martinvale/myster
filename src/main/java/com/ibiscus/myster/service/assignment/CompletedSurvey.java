@@ -7,8 +7,6 @@ import java.util.List;
 
 public class CompletedSurvey {
 
-    private long assignmentId;
-
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date visitDate;
 
@@ -19,14 +17,6 @@ public class CompletedSurvey {
     private int outMinute;
 
     private List<CompletedSurveyItem> completedSurveyItems;
-
-    public long getAssignmentId() {
-        return assignmentId;
-    }
-
-    public void setAssignmentId(long assignmentId) {
-        this.assignmentId = assignmentId;
-    }
 
     public List<CompletedSurveyItem> getCompletedSurveyItems() {
         return completedSurveyItems;

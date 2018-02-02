@@ -1,0 +1,11 @@
+Modificaciones en la configuracion para deployar
+POM.xml
+  1) Descomentar la exclusion de spring-boot-starter-tomcat en la definicion de la dependencia de spring-boot-starter-thymeleaf
+  
+application.poperties
+  1) spring.datasource.url=jdbc:google:mysql://wise-arena-186102:us-central1:myster/myster
+  2) spring.datasource.driver-class-name=com.mysql.jdbc.GoogleDriver
+
+
+Connecting to the database
+1) Start the proxy: cloud_sql_proxy_x64.bat

@@ -1,0 +1,1 @@
+./cloud_sql_proxy_x64.exe -instances=wise-arena-186102:us-central1:myster=tcp:3307

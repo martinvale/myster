@@ -28,7 +28,7 @@ public class AssignmentController {
 
     @PostMapping("/{assignmentId}")
     public String save(@PathVariable long assignmentId, @ModelAttribute CompletedSurvey completedSurvey, Model model) {
-        assignmentService.save(completedSurvey);
+        assignmentService.save(assignmentId, completedSurvey);
         SurveyTask surveyTask = assignmentService.getSurveyTask(assignmentId);
         model.addAttribute("survey", surveyTask);
         if (surveyTask.isComplete()) {

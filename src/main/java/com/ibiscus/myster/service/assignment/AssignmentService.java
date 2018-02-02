@@ -182,8 +182,8 @@ public class AssignmentService {
         mailSender.sendMail(user.getUsername(), "Asignacion de encuesta", bodyMessage);
     }
 
-    public void save(CompletedSurvey completedSurvey) {
-        Assignment assignment = assignmentRepository.findOne(completedSurvey.getAssignmentId());
+    public void save(long assignmentId, CompletedSurvey completedSurvey) {
+        Assignment assignment = assignmentRepository.findOne(assignmentId);
         Assignment filledAssignment = new Assignment(assignment.getId(), assignment.getSurvey(), assignment.getShopperId(),
                 assignment.getLocation(), new Date(completedSurvey.getVisitDate().getTime()),
                 Time.valueOf(LocalTime.of(completedSurvey.getInHour(), completedSurvey.getInMinute())),
@@ -191,7 +191,7 @@ public class AssignmentService {
         assignmentRepository.save(filledAssignment);
         completedSurvey.getCompletedSurveyItems().stream()
                 .filter(completedSurveyItem -> !StringUtils.isBlank(completedSurveyItem.getValue()) || completedSurveyItem.getFiles() != null)
-                .forEach(completedSurveyItem -> save(completedSurvey.getAssignmentId(), completedSurveyItem));
+                .forEach(completedSurveyItem -> save(assignmentId, completedSurveyItem));
     }
 
     private void save(long assignmentId, CompletedSurveyItem completedSurveyItem) {
