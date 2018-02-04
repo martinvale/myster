@@ -199,11 +199,16 @@ public class AssignmentService {
         Optional<Response> responseValue = Optional.ofNullable(
                 responseRepository.findByAssignment(assignmentId,
                         completedSurveyItem.getSurveyItemId()));
-        if (completedSurveyItem.getFiles() != null) {
+        if (completedSurveyItem.isFilesResponse()) {
             StringJoiner fileValues = new StringJoiner(",");
-            for (MultipartFile file : completedSurveyItem.getFiles()) {
-                fileValues.add(datastoreService.save("shopncheck/" + assignmentId + "/", file));
-            }
+            newArrayList(completedSurveyItem.getValue().split(","))
+                .stream()
+                .filter(s -> !completedSurveyItem.getValidValues().contains(s))
+                .forEach(s -> datastoreService.delete(s));
+            completedSurveyItem.getValidValues().stream().forEach(s -> fileValues.add(s));
+            completedSurveyItem.getFiles().stream()
+                .filter(file -> !file.isEmpty())
+                .forEach(file -> fileValues.add(datastoreService.save("shopncheck/" + assignmentId + "/", file)));
             completedSurveyItem.setValue(fileValues.toString());
         }
 

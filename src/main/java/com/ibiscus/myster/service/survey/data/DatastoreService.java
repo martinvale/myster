@@ -11,4 +11,6 @@ public interface DatastoreService {
     String save(String tempFilePath);
 
     File get(String id);
+
+    void delete(String path);
 }

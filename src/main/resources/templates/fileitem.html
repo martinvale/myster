@@ -3,32 +3,38 @@
 <body>
   <div th:fragment="body">
     <div id="files">
-      <div v-for="fileInput in fileInputs" class="row" style="margin-top: 5px">
-        <div class="col-md-8">
-          <div class="input-group">
-            <input type="file" th:name="|completedSurveyItems[${item.index}].file|" class="form-control"></input>
-            <span class="input-group-btn">
-            <button type="button" class="btn btn-default js-delete-file" v-on:click="removeFileInput(fileInput.id)">
-              <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-            </button>
-          </span>
+        <input type="hidden" th:name="|completedSurveyItems[${item.index}].value|" v-model="value" />
+        <input type="hidden" th:name="|completedSurveyItems[${item.index}].filesResponse|" value="true" />
+        <div v-for="fileInput in fileInputs" class="row" style="margin-top: 5px">
+          <div class="col-md-8">
+            <div class="input-group">
+              <input type="file" th:name="|completedSurveyItems[${item.index}].files|" class="form-control"></input>
+              <span class="input-group-btn">
+              <button type="button" class="btn btn-default js-delete-file" v-on:click="removeFileInput(fileInput.id)">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+              </button>
+            </span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row" style="margin-top: 5px">
-        <div class="col-md-8">
-          <button type="button" class="btn btn-default pull-right js-add-file" v-on:click="addFileInput">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-          </button>
+        <div class="row" style="margin-top: 5px">
+          <div class="col-md-8">
+            <button type="button" class="btn btn-default pull-right js-add-file" v-on:click="addFileInput">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="row" style="margin-top: 10px">
-      <div th:each="fileUrl : ${item.files}" class="col-xs-6 col-md-3">
-        <div class="thumbnail">
-          <img th:src="|https://storage.googleapis.com/myster/${fileUrl}" />
+        <div class="row" style="margin-top: 10px">
+          <div v-for="fileUrl in files" class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+              <input type="hidden" th:name="|completedSurveyItems[${item.index}].validValues|" v-bind:value="fileUrl" />
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="deleteFile(fileUrl)">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <img v-bind:src="'https://storage.googleapis.com/myster/' + fileUrl" />
+            </div>
+          </div>
         </div>
-      </div>
     </div>
     <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
@@ -38,6 +44,7 @@
             el: '#files',
             data: {
               idGenerator: 1,
+              value: /*[[${item.value}]]*/,
               fileInputs: [{id: 0}],
               files: /*[[${item.files}]]*/
             },
@@ -58,6 +65,18 @@
                 if (index) {
                   this.fileInputs.splice(index, 1);
                 }
+              },
+              findFileByUrl: function(url) {
+                for (var i = 0; i < this.files.length; i++) {
+                  if (this.files[i] == url) {
+                    return i;
+                  }
+                }
+                return null;
+              },
+              deleteFile: function (url) {
+                var index = this.findFileByUrl(url);
+                this.files.splice(index, 1);
               }
             }
           });

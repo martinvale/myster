@@ -42,4 +42,9 @@ public class LocalDataStore implements DatastoreService {
         return new File(filesLocation + id);
     }
 
+    @Override
+    public void delete(String path) {
+
+    }
+
 }

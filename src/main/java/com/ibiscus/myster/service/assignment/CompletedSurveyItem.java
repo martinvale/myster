@@ -4,13 +4,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 public class CompletedSurveyItem {
 
     private long surveyItemId;
 
     private String value;
 
+    private boolean filesResponse;
+
     private List<MultipartFile> files;
+
+    private List<String> validValues = newArrayList();
 
     public long getSurveyItemId() {
         return surveyItemId;
@@ -32,7 +38,23 @@ public class CompletedSurveyItem {
         return files;
     }
 
-    public void setFile(List<MultipartFile> files) {
+    public void setFiles(List<MultipartFile> files) {
         this.files = files;
+    }
+
+    public List<String> getValidValues() {
+        return validValues;
+    }
+
+    public void setValidValues(List<String> validValues) {
+        this.validValues = validValues;
+    }
+
+    public boolean isFilesResponse() {
+        return filesResponse;
+    }
+
+    public void setFilesResponse(boolean value) {
+        filesResponse = value;
     }
 }

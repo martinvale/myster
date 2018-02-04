@@ -7,6 +7,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
+import static java.lang.String.format;
+
 public class GoogleDatastoreService implements DatastoreService {
 
     private static Storage storage;
@@ -25,7 +27,7 @@ public class GoogleDatastoreService implements DatastoreService {
             Blob blob = storage.create(blobInfo, IOUtils.toByteArray(file.getInputStream()));
             return blob.getName();
         } catch (IOException e) {
-            String message = String.format("Cannot store file %s in the bucket %s", file.getOriginalFilename(),
+            String message = format("Cannot store file %s in the bucket %s", file.getOriginalFilename(),
                     BUCKET_NAME);
             throw new RuntimeException(message, e);
         }
@@ -39,5 +41,13 @@ public class GoogleDatastoreService implements DatastoreService {
     @Override
     public File get(String id) {
         return null;
+    }
+
+    @Override
+    public void delete(String fileUrl) {
+        BlobId blobId = BlobId.of(BUCKET_NAME, fileUrl);
+        if (!storage.delete(blobId)) {
+            throw new IllegalArgumentException(format("Cannot delete %s file from datastore", fileUrl));
+        }
     }
 }
