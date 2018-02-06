@@ -3,6 +3,7 @@ package com.ibiscus.myster.service.shopper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.ibiscus.myster.service.security.UserService;
 import org.apache.commons.text.RandomStringGenerator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +13,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ibiscus.myster.model.security.User;
 import com.ibiscus.myster.model.shopper.Shopper;
-import com.ibiscus.myster.service.security.UserService;
 import com.ibiscus.myster.service.user.UserBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)

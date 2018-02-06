@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.ibiscus.myster.model.company.Location;
 import com.ibiscus.myster.model.security.User;
+import com.ibiscus.myster.model.shopper.Shopper;
 import com.ibiscus.myster.model.survey.*;
 import com.ibiscus.myster.model.survey.category.Category;
 import com.ibiscus.myster.model.survey.category.CategoryDto;
@@ -19,19 +20,24 @@ import com.ibiscus.myster.model.survey.data.Response;
 import com.ibiscus.myster.model.survey.item.*;
 import com.ibiscus.myster.repository.category.CategoryRepository;
 import com.ibiscus.myster.repository.security.UserRepository;
+import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.repository.survey.data.ResponseRepository;
 import com.ibiscus.myster.repository.survey.item.ItemOptionRepository;
 import com.ibiscus.myster.service.communication.MailSender;
+import com.ibiscus.myster.service.security.UserInfo;
 import com.ibiscus.myster.service.survey.data.DatastoreService;
 import com.ibiscus.myster.web.admin.survey.SurveyAssignment;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.ibiscus.myster.repository.assignment.AssignmentRepository;
-import org.springframework.web.multipart.MultipartFile;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.String.format;
+import static org.apache.commons.lang3.Validate.isTrue;
 
 @Service
 public class AssignmentService {
@@ -50,6 +56,9 @@ public class AssignmentService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ShopperRepository shopperRepository;
 
     @Autowired
     private MailSender mailSender;
@@ -120,6 +129,7 @@ public class AssignmentService {
 
     public SurveyTask getSurveyTask(long assignmentId) {
         Assignment assignment = get(assignmentId);
+        validateAccess(assignment);
         Survey survey = assignment.getSurvey();
         List<CategoryDto> taskCategories = newArrayList();
         List<Category> categories = categoryRepository.findBySurveyId(survey.getId());
@@ -166,6 +176,15 @@ public class AssignmentService {
             outTime = assignment.getOutTime().toLocalTime();
         }
         return new SurveyTask(assignmentId, taskDescription, taskCategories, visitDate, inTime, outTime);
+    }
+
+    private void validateAccess(Assignment assignment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserInfo principal = (UserInfo) authentication.getPrincipal();
+        Shopper shopper = shopperRepository.getByUserId(principal.getUserId());
+        isTrue(assignment.getShopperId() == shopper.getId(),
+                format("The current logged shopper %s cannot view the assignment id: %s", principal.getUsername(),
+                        assignment.getId()));
     }
 
     public Assignment get(long id) {

@@ -11,14 +11,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ibiscus.myster.model.security.User;
-import com.ibiscus.myster.service.security.UserServiceImpl;
+import com.ibiscus.myster.service.security.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:services.xml", "classpath:persistence.xml"})
 public class UserServiceTest {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Test
     public void crud() {

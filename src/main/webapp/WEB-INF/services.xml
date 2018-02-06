@@ -22,10 +22,6 @@
         <constructor-arg index="0" ref="choiceRepository"/>
     </bean>
 
-    <bean id="userService" class="com.ibiscus.myster.service.security.UserServiceImpl">
-        <constructor-arg index="0" ref="userRepository"/>
-    </bean>
-
     <bean id="shopperService" class="com.ibiscus.myster.service.shopper.ShopperServiceImpl">
         <constructor-arg index="0" ref="shopperRepository"/>
     </bean>
