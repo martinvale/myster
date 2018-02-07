@@ -2,9 +2,7 @@ package com.ibiscus.myster.service.assignment;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -68,63 +66,18 @@ public class AssignmentService {
 
     private final String siteUrl = "http://localhost:8080/";
 
-    public List<AssignmentDescriptor> findDescriptorsByShopperId(long shopperId) {
-        List<AssignmentDescriptor> assignmentDescriptors = new ArrayList<AssignmentDescriptor>();
-        List<Assignment> assignments = assignmentRepository.findByShopperId(shopperId);
+    public List<TaskDescription> findByUserId(long userId) {
+        List<TaskDescription> assignmentDescriptors = newArrayList();
+        Shopper shopper = shopperRepository.getByUserId(userId);
+        List<Assignment> assignments = assignmentRepository.findByShopperId(shopper.getId());
         for (Assignment assignment : assignments) {
             if (!assignment.isSent()) {
                 Location location = assignment.getLocation();
-                assignmentDescriptors.add(new AssignmentDescriptor(assignment.getId(), "Carrefour",
-                        location.getAddress(), Assignment.STATE.FINISHED.equals(assignment.getState())));
+                assignmentDescriptors.add(new TaskDescription(assignment.getId(), assignment.getSurvey().getName(),
+                        location.getAddress(), assignment.getPayRate()));
             }
         }
         return assignmentDescriptors;
-    }
-
-    public SurveyTask2 getTask(long id) {
-        Assignment assignment = get(id);
-        Survey survey = assignment.getSurvey();
-        List<TaskCategory> taskCategories = newArrayList();
-        List<Category> categories = categoryRepository.findBySurveyId(survey.getId());
-        for (Category category : categories) {
-            List<AbstractSurveyItem> items = itemOptionRepository.findByCategoryIdOrderByPositionAsc(category.getId());
-            List<SurveyTaskItem> taskItems = newArrayList();
-            for (SurveyItem item : items) {
-                Optional<Response> response = Optional.ofNullable(
-                        responseRepository.findByAssignment(assignment.getId(), item.getId()));
-                String value = null;
-                if (response.isPresent()) {
-                    value = response.get().getValue();
-                }
-                if (item instanceof SingleChoice) {
-                    taskItems.add(new SingleChoiceTaskItem((SingleChoice) item, Optional.ofNullable(value)));
-                } else if (item instanceof TextItem) {
-                    taskItems.add(new TextItemTaskItem((TextItem) item, Optional.ofNullable(value)));
-                } else if (item instanceof NumberItem) {
-                    taskItems.add(new NumberItemTaskItem((NumberItem) item, Optional.ofNullable(value)));
-                } else if (item instanceof TimeItem) {
-                    taskItems.add(new TimeItemTaskItem((TimeItem) item, Optional.ofNullable(value)));
-                } else if (item instanceof FileItem) {
-                    taskItems.add(new FileTaskItem((FileItem) item, Optional.ofNullable(value)));
-                }
-            }
-            taskCategories.add(new TaskCategory(category.getName(), taskItems));
-        }
-        TaskDescription taskDescription = new TaskDescription(survey.getName(), survey.getName(),
-                assignment.getLocation().getAddress(), assignment.getPayRate());
-        LocalDate visitDate = LocalDate.now();
-        if (assignment.getVisitDate() != null) {
-            visitDate = assignment.getVisitDate().toLocalDate();
-        }
-        LocalTime inTime = LocalTime.now();
-        if (assignment.getInTime() != null) {
-            inTime = assignment.getInTime().toLocalTime();
-        }
-        LocalTime outTime = LocalTime.now();
-        if (assignment.getOutTime() != null) {
-            outTime = assignment.getOutTime().toLocalTime();
-        }
-        return new SurveyTask2(taskDescription, taskCategories, visitDate, inTime, outTime);
     }
 
     public SurveyTask getSurveyTask(long assignmentId) {
@@ -161,7 +114,7 @@ public class AssignmentService {
             }
             taskCategories.add(new CategoryDto(category.getName(), taskItems));
         }
-        TaskDescription taskDescription = new TaskDescription(survey.getName(), survey.getName(),
+        TaskDescription taskDescription = new TaskDescription(assignmentId, survey.getName(),
                 assignment.getLocation().getAddress(), assignment.getPayRate());
         java.util.Date visitDate = new java.util.Date();
         if (assignment.getVisitDate() != null) {
@@ -204,7 +157,7 @@ public class AssignmentService {
     public void save(long assignmentId, CompletedSurvey completedSurvey) {
         Assignment assignment = assignmentRepository.findOne(assignmentId);
         Assignment filledAssignment = new Assignment(assignment.getId(), assignment.getSurvey(), assignment.getShopperId(),
-                assignment.getLocation(), new Date(completedSurvey.getVisitDate().getTime()),
+                assignment.getLocation(), assignment.getPayRate(), new Date(completedSurvey.getVisitDate().getTime()),
                 Time.valueOf(LocalTime.of(completedSurvey.getInHour(), completedSurvey.getInMinute())),
                 Time.valueOf(LocalTime.of(completedSurvey.getOutHour(), completedSurvey.getOutMinute())));
         assignmentRepository.save(filledAssignment);

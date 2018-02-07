@@ -2,24 +2,20 @@ package com.ibiscus.myster.model.survey;
 
 public class TaskDescription {
 
-    private final String clientName;
-    private final String surveyCode;
+    private final long assignmentId;
+    private final String client;
     private final String address;
     private final float payRate;
 
-    public TaskDescription(String clientName, String surveyCode, String address, float payRate) {
-        this.clientName = clientName;
-        this.surveyCode = surveyCode;
+    public TaskDescription(long assignmentId, String client, String address, float payRate) {
+        this.assignmentId = assignmentId;
+        this.client = client;
         this.address = address;
         this.payRate = payRate;
     }
 
-    public String getClientName() {
-        return clientName;
-    }
-
-    public String getSurveyCode() {
-        return surveyCode;
+    public String getClient() {
+        return client;
     }
 
     public String getAddress() {
@@ -30,4 +26,7 @@ public class TaskDescription {
         return payRate;
     }
 
+    public long getAssignmentId() {
+        return assignmentId;
+    }
 }

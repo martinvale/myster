@@ -3,13 +3,13 @@ package com.ibiscus.myster.service.assignment;
 public class AssignmentDescriptor {
 
     private long assignmentId;
-    private String company;
+    private String client;
     private String address;
     private boolean complete;
 
-    public AssignmentDescriptor(long assignmentId, String company, String address, boolean complete) {
+    public AssignmentDescriptor(long assignmentId, String client, String address, boolean complete) {
         this.assignmentId = assignmentId;
-        this.company = company;
+        this.client = client;
         this.address = address;
         this.complete = complete;
     }
@@ -18,8 +18,8 @@ public class AssignmentDescriptor {
         return assignmentId;
     }
 
-    public String getCompany() {
-        return company;
+    public String getClient() {
+        return client;
     }
 
     public String getAddress() {

@@ -60,11 +60,13 @@ public class Assignment {
         this.location = location;
     }
 
-    public Assignment(long id, Survey survey, long shopperId, Location location, Date visitDate, Time inTime, Time outTime) {
+    public Assignment(long id, Survey survey, long shopperId, Location location, float payRate, Date visitDate,
+                      Time inTime, Time outTime) {
         this.id = id;
         this.survey = survey;
         this.shopperId = shopperId;
         this.location = location;
+        this.payRate = payRate;
         this.visitDate = visitDate;
         this.inTime = inTime;
         this.outTime = outTime;

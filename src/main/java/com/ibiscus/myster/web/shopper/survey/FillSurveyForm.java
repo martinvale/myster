@@ -31,7 +31,7 @@ public abstract class FillSurveyForm extends VerticalLayout {
 
         VerticalLayout summaryLayout = new VerticalLayout();
         TaskDescription taskDescription = surveyTask.getTaskDescription();
-        summaryLayout.addComponent(new Label("Cliente: " + taskDescription.getClientName()));
+        summaryLayout.addComponent(new Label("Cliente: " + taskDescription.getClient()));
         summaryLayout.addComponent(new Label("Direccion: " + taskDescription.getAddress()));
         NumberFormat moneyFormat = new DecimalFormat("#.##");
         summaryLayout.addComponent(new Label("Honorarios: $" + moneyFormat.format(taskDescription.getPayRate())));

@@ -63,7 +63,7 @@
     <div class="panel-body">
       <form action="#" th:action="@{{assignmentId}(assignmentId=${survey.assignmentId})}" th:object="${survey}" method="post" enctype="multipart/form-data">
         <div class="panel">
-          <p><label>Cliente:</label> <span th:text="${survey.taskDescription.clientName}">Carrefour</span></p>
+          <p><label>Cliente:</label> <span th:text="${survey.taskDescription.client}">Carrefour</span></p>
           <p><label>Direccion:</label> <span th:text="${survey.taskDescription.address}">Acoyte 600</span></p>
           <p><label>Honorarios:</label> $<span th:text="${survey.taskDescription.payRate}">100</span></p>
           <div class="form-group row">
