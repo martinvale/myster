@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <!-- default header name is X-CSRF-TOKEN -->
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>Myster :: Survey</title>
 
   <!-- Latest compiled and minified CSS -->
@@ -12,32 +15,87 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
         integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"></link>
 
-  <!--link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></link>
+  <!--script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script-->
+
+  <!--link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></link-->
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script-->
+  <!--script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script-->
   <script src="https://unpkg.com/vue"></script>
 </head>
 <body>
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>Direcci&oacute;n</th>
-            <th>Completa</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="task : ${tasks}">
-            <td><a th:href="@{${task.assignmentId}}" th:text="${task.client}">Carrefour</a></td>
-            <td th:text="${task.address}">Av. Acoyte 600</td>
-            <td th:text="${task.payRate}">$100</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <!--div class="page-header">
+    <h1>Martin Valletta</h1>
+  </div-->
+  <table id="tasks" class="table">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Direcci&oacute;n</th>
+        <th>Importe</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="task in tasks">
+        <td>{{task.client}}</td>
+        <td>{{task.address}}</td>
+        <td>$ {{task.payRate}}</td>
+        <td>
+          <a v-if="!task.complete" v-bind:href="task.assignmentId" role="button" class="btn btn-default btn-sm js-fill">Completar</a>
+          <button v-if="task.complete" class="btn btn-default btn-sm" v-on:click="send(task.assignmentId)">Enviar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script type="text/javascript" th:inline="javascript">
+  /*<![CDATA[*/
+
+    /*Vue.component('category-item', {
+      props: ['category']
+    });
+
+    Vue.component('item-item', {
+      props: ['item']
+    });*/
+
+    var app = new Vue({
+      el: '#tasks',
+      data: {
+        tasks: [[${tasks}]]
+      },
+      methods: {
+        findIndexById: function(id) {
+          for (var i = 0; i < this.tasks.length; i++) {
+            if (this.tasks[i].assignmentId == id) {
+              return i;
+            }
+          }
+          return null;
+        },
+        send: function (assignmentId) {
+          var me = this;
+          var token = $("meta[name='_csrf']").attr("content");
+          var header = $("meta[name='_csrf_header']").attr("content");
+          $.ajaxSetup({
+            headers: {
+              [[${_csrf.headerName}]]: token
+            }
+          });
+          $.ajax({
+            url: assignmentId + '/sent',
+            type: 'PUT',
+            success: function(data) {
+              var index = me.findIndexById(assignmentId);
+              me.tasks.splice(index, 1);
+            }
+          });
+        }
+      }
+    })
+
+  /*]]>*/
+  </script>
 </body>
 </html>

@@ -34,6 +34,10 @@ import org.springframework.stereotype.Service;
 import com.ibiscus.myster.repository.assignment.AssignmentRepository;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.ibiscus.myster.model.survey.Assignment.Builder.newAssignmentBuilder;
+import static com.ibiscus.myster.model.survey.Assignment.STATE.FINISHED;
+import static com.ibiscus.myster.model.survey.Assignment.STATE.PENDING;
+import static com.ibiscus.myster.model.survey.Assignment.STATE.SENT;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.Validate.isTrue;
 
@@ -74,7 +78,7 @@ public class AssignmentService {
             if (!assignment.isSent()) {
                 Location location = assignment.getLocation();
                 assignmentDescriptors.add(new TaskDescription(assignment.getId(), assignment.getSurvey().getName(),
-                        location.getAddress(), assignment.getPayRate()));
+                        location.getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState())));
             }
         }
         return assignmentDescriptors;
@@ -115,7 +119,7 @@ public class AssignmentService {
             taskCategories.add(new CategoryDto(category.getName(), taskItems));
         }
         TaskDescription taskDescription = new TaskDescription(assignmentId, survey.getName(),
-                assignment.getLocation().getAddress(), assignment.getPayRate());
+                assignment.getLocation().getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState()));
         java.util.Date visitDate = new java.util.Date();
         if (assignment.getVisitDate() != null) {
             visitDate = new java.util.Date(assignment.getVisitDate().getTime());
@@ -156,10 +160,13 @@ public class AssignmentService {
 
     public void save(long assignmentId, CompletedSurvey completedSurvey) {
         Assignment assignment = assignmentRepository.findOne(assignmentId);
-        Assignment filledAssignment = new Assignment(assignment.getId(), assignment.getSurvey(), assignment.getShopperId(),
-                assignment.getLocation(), assignment.getPayRate(), new Date(completedSurvey.getVisitDate().getTime()),
-                Time.valueOf(LocalTime.of(completedSurvey.getInHour(), completedSurvey.getInMinute())),
-                Time.valueOf(LocalTime.of(completedSurvey.getOutHour(), completedSurvey.getOutMinute())));
+        Assignment filledAssignment = newAssignmentBuilder()
+                .withAssignment(assignment)
+                .withVisitDate(new Date(completedSurvey.getVisitDate().getTime()))
+                .withInTime(Time.valueOf(LocalTime.of(completedSurvey.getInHour(), completedSurvey.getInMinute())))
+                .withOutTime(Time.valueOf(LocalTime.of(completedSurvey.getOutHour(), completedSurvey.getOutMinute())))
+                .withState(PENDING)
+                .build();
         assignmentRepository.save(filledAssignment);
         completedSurvey.getCompletedSurveyItems().stream()
                 .filter(completedSurveyItem -> !StringUtils.isBlank(completedSurveyItem.getValue()) || completedSurveyItem.getFiles() != null)
@@ -167,7 +174,6 @@ public class AssignmentService {
     }
 
     private void save(long assignmentId, CompletedSurveyItem completedSurveyItem) {
-
         Optional<Response> responseValue = Optional.ofNullable(
                 responseRepository.findByAssignment(assignmentId,
                         completedSurveyItem.getSurveyItemId()));
@@ -207,4 +213,15 @@ public class AssignmentService {
                 .append(assignment.getId());
         return builder.toString();
     }
+
+    public void send(long assignmentId) {
+        Assignment assignment = assignmentRepository.findOne(assignmentId);
+        validateAccess(assignment);
+        Assignment sentAssignment = newAssignmentBuilder()
+                .withAssignment(assignment)
+                .withState(SENT)
+                .build();
+        assignmentRepository.save(sentAssignment);
+    }
+
 }

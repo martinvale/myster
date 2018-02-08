@@ -60,13 +60,14 @@ public class Assignment {
         this.location = location;
     }
 
-    public Assignment(long id, Survey survey, long shopperId, Location location, float payRate, Date visitDate,
-                      Time inTime, Time outTime) {
+    public Assignment(long id, Survey survey, long shopperId, Location location, float payRate, STATE state,
+                      Date visitDate, Time inTime, Time outTime) {
         this.id = id;
         this.survey = survey;
         this.shopperId = shopperId;
         this.location = location;
         this.payRate = payRate;
+        this.state = state;
         this.visitDate = visitDate;
         this.inTime = inTime;
         this.outTime = outTime;
@@ -130,5 +131,60 @@ public class Assignment {
 
     public boolean isSent() {
         return state == STATE.SENT;
+    }
+
+    public static final class Builder {
+
+        private long id;
+        private Survey survey;
+        private long shopperId;
+        private Location location;
+        private float payRate;
+        private STATE state = STATE.PENDING;
+        private Date visitDate;
+        private Time inTime;
+        private Time outTime;
+
+        public Builder withAssignment(Assignment value) {
+            id = value.getId();
+            survey = value.getSurvey();
+            shopperId = value.getShopperId();
+            location = value.getLocation();
+            payRate = value.getPayRate();
+            state = value.getState();
+            visitDate = value.getVisitDate();
+            inTime = value.getInTime();
+            outTime = value.getOutTime();
+            return this;
+        }
+
+        public Builder withState(STATE value) {
+            state = value;
+            return this;
+        }
+
+        public Builder withVisitDate(Date value) {
+            visitDate = value;
+            return this;
+        }
+
+        public Builder withInTime(Time value) {
+            inTime = value;
+            return this;
+        }
+
+        public Builder withOutTime(Time value) {
+            outTime = value;
+            return this;
+        }
+
+        public Assignment build() {
+            return new Assignment(id, survey, shopperId, location, payRate, state, visitDate,
+                    inTime, outTime);
+        }
+
+        public static Builder newAssignmentBuilder() {
+            return new Builder();
+        }
     }
 }
