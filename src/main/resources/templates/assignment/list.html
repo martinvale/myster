@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
         integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"></link>
 
+  <link rel="stylesheet" th:href="@{/css/shopper.css}"></link>
   <!--script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script-->
 
   <!--link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></link-->
@@ -24,19 +25,19 @@
   <script src="https://unpkg.com/vue"></script>
 </head>
 <body>
-  <!--div class="page-header">
-    <h1>Martin Valletta</h1>
-  </div-->
-  <table id="tasks" class="table">
-    <thead>
+  <nav th:include="assignment/header" class="navbar navbar-inverse navbar-fixed-top">
+  </nav>
+  <div class="container main">
+    <table id="tasks" class="table">
+      <thead>
       <tr>
         <th>Cliente</th>
         <th>Direcci&oacute;n</th>
         <th>Importe</th>
         <th>Acciones</th>
       </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
       <tr v-for="task in tasks">
         <td>{{task.client}}</td>
         <td>{{task.address}}</td>
@@ -46,8 +47,9 @@
           <button v-if="task.complete" class="btn btn-default btn-sm" v-on:click="send(task.assignmentId)">Enviar</button>
         </td>
       </tr>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 
   <script type="text/javascript" th:inline="javascript">
   /*<![CDATA[*/
