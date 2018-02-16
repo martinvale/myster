@@ -10,29 +10,35 @@ import java.util.Collection;
 
 public class UserInfo implements UserDetails {
 
-    private final User user;
+    private final long id;
+    private final String username;
+    private final String password;
+    private final boolean enabled;
 
     public UserInfo(User user) {
-        this.user = user;
+        id = user.getId();
+        username = user.getUsername();
+        password = user.getPassword();
+        enabled = user.isEnabled();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return ImmutableList.of(new SimpleGrantedAuthority("SHOPPERs"));
+        return ImmutableList.of(new SimpleGrantedAuthority("SHOPPER"));
     }
 
     public long getUserId() {
-        return user.getId();
+        return id;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return username;
     }
 
     @Override
@@ -52,6 +58,6 @@ public class UserInfo implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.isEnabled();
+        return enabled;
     }
 }
