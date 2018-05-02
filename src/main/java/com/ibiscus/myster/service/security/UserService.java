@@ -26,6 +26,14 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public UserDetails findByExternalId(String externalId) {
+        Optional<User> user = Optional.ofNullable(userRepository.getByExternalId(externalId));
+        if (!user.isPresent()) {
+            throw new UsernameNotFoundException(externalId);
+        }
+        return user.map(u -> new UserInfo(u)).get();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = Optional.ofNullable(userRepository.getByUsername(username));

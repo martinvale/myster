@@ -25,7 +25,7 @@ public class AssignSurveyForm extends Form<SurveyAssignment> {
         ComboBox<Shopper> shopperSelector = new ComboBox<>("Shopper");
         List<Shopper> shoppers = Lists.newArrayList(shopperRepository.findAll());
         shopperSelector.setDataProvider(new ListDataProvider<Shopper>(shoppers));
-        shopperSelector.setItemCaptionGenerator(item -> item.getDisplayName());
+        shopperSelector.setItemCaptionGenerator(item -> item.toString());
         addComponent(shopperSelector);
 
         ComboBox<Location> pointOfSaleSelector = new ComboBox<>("Punto de venta");

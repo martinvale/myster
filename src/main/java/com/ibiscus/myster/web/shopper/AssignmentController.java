@@ -4,10 +4,13 @@ import com.ibiscus.myster.model.survey.SurveyTask;
 import com.ibiscus.myster.model.survey.TaskDescription;
 import com.ibiscus.myster.service.assignment.AssignmentService;
 import com.ibiscus.myster.service.assignment.CompletedSurvey;
-import com.ibiscus.myster.service.security.UserInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +23,17 @@ import java.util.Map;
 @RequestMapping("/shopper/assignments")
 public class AssignmentController {
 
+    private final Logger logger = LoggerFactory.getLogger(AssignmentController.class);
+
     @Autowired
     private AssignmentService assignmentService;
 
     @GetMapping("/")
     public String get(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserInfo principal = (UserInfo) authentication.getPrincipal();
-        List<TaskDescription> tasks = assignmentService.findByUserId(principal.getUserId());
+        logger.info("Current authentication on context: {}", authentication);
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        List<TaskDescription> tasks = assignmentService.findByUsername(principal.getUsername());
         model.addAttribute("tasks", tasks);
         return "assignment/list";
     }

@@ -15,6 +15,15 @@ public class UserBuilder {
     private String password = new RandomStringGenerator.Builder()
         .withinRange('a', 'z').build().generate(5);
 
+    private String firstName = new RandomStringGenerator.Builder()
+            .withinRange('a', 'z').build().generate(5);
+
+    private String lastName = new RandomStringGenerator.Builder()
+            .withinRange('a', 'z').build().generate(5);
+
+    private String externalId = new RandomStringGenerator.Builder()
+            .withinRange('0', '9').build().generate(5);
+
     private boolean enabled = RandomUtils.nextBoolean();
 
     public UserBuilder withId(long id) {
@@ -37,7 +46,23 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder withFirstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    public UserBuilder withLastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public UserBuilder withExternalId(String externalId) {
+        this.externalId = externalId;
+        return this;
+    }
+
     public User build() {
-        return new User(id, username, password, enabled);
+        return new User(id, username, password, firstName, lastName,
+                externalId, enabled);
     }
 }

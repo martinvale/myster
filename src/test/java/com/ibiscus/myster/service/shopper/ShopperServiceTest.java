@@ -38,30 +38,13 @@ public class ShopperServiceTest {
 
         Shopper storedShopper = shopperService.get(shopper.getId());
         assertEquals(shopper.getUserId(), storedShopper.getUserId());
-        assertEquals(shopper.getLastName(), storedShopper.getLastName());
-        assertEquals(shopper.getFirstName(), storedShopper.getFirstName());
 
-        String newFirstName = getFirstName();
-        String newLastName = getLastName();
         shopper = new ShopperBuilder()
             .withId(storedShopper.getId())
             .withUserId(user.getId())
-            .withFirstName(newFirstName)
-            .withLastName(newLastName)
             .build();
         shopperService.save(shopper);
         storedShopper = shopperService.get(shopper.getId());
-        assertEquals(newFirstName, storedShopper.getFirstName());
-        assertEquals(newLastName, storedShopper.getLastName());
     }
 
-    private String getFirstName() {
-        return new RandomStringGenerator.Builder().withinRange('a', 'z').build()
-                .generate(5);
-    }
-
-    private String getLastName() {
-        return new RandomStringGenerator.Builder().withinRange('a', 'z').build()
-                .generate(5);
-    }
 }

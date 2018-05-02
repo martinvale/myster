@@ -10,6 +10,8 @@ import java.util.Collection;
 
 public class UserInfo implements UserDetails {
 
+    private static final long serialVersionUID = 1L;
+
     private final long id;
     private final String username;
     private final String password;
@@ -24,7 +26,7 @@ public class UserInfo implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return ImmutableList.of(new SimpleGrantedAuthority("SHOPPER"));
+        return ImmutableList.of(new SimpleGrantedAuthority("ROLE_SHOPPER"));
     }
 
     public long getUserId() {

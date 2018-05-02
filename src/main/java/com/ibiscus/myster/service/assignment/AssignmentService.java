@@ -26,9 +26,12 @@ import com.ibiscus.myster.service.security.UserInfo;
 import com.ibiscus.myster.service.survey.data.DatastoreService;
 import com.ibiscus.myster.web.admin.survey.SurveyAssignment;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.ibiscus.myster.repository.assignment.AssignmentRepository;
@@ -39,10 +42,14 @@ import static com.ibiscus.myster.model.survey.Assignment.STATE.FINISHED;
 import static com.ibiscus.myster.model.survey.Assignment.STATE.PENDING;
 import static com.ibiscus.myster.model.survey.Assignment.STATE.SENT;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.Validate.isTrue;
 
 @Service
 public class AssignmentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AssignmentService.class);
 
     @Autowired
     private AssignmentRepository assignmentRepository;
@@ -70,9 +77,10 @@ public class AssignmentService {
 
     private final String siteUrl = "http://localhost:8080/";
 
-    public List<TaskDescription> findByUserId(long userId) {
+    public List<TaskDescription> findByUsername(String username) {
         List<TaskDescription> assignmentDescriptors = newArrayList();
-        Shopper shopper = shopperRepository.getByUserId(userId);
+        User user = userRepository.getByUsername(username);
+        Shopper shopper = shopperRepository.getByUserId(user.getId());
         List<Assignment> assignments = assignmentRepository.findByShopperId(shopper.getId());
         for (Assignment assignment : assignments) {
             if (!assignment.isSent()) {
@@ -137,8 +145,9 @@ public class AssignmentService {
 
     private void validateAccess(Assignment assignment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserInfo principal = (UserInfo) authentication.getPrincipal();
-        Shopper shopper = shopperRepository.getByUserId(principal.getUserId());
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.getByUsername(principal.getUsername());
+        Shopper shopper = shopperRepository.getByUserId(user.getId());
         isTrue(assignment.getShopperId() == shopper.getId(),
                 format("The current logged shopper %s cannot view the assignment id: %s", principal.getUsername(),
                         assignment.getId()));
@@ -159,6 +168,7 @@ public class AssignmentService {
     }
 
     public void save(long assignmentId, CompletedSurvey completedSurvey) {
+        logger.info("Saving survey assignment {}", assignmentId);
         Assignment assignment = assignmentRepository.findOne(assignmentId);
         Assignment filledAssignment = newAssignmentBuilder()
                 .withAssignment(assignment)
@@ -169,20 +179,23 @@ public class AssignmentService {
                 .build();
         assignmentRepository.save(filledAssignment);
         completedSurvey.getCompletedSurveyItems().stream()
-                .filter(completedSurveyItem -> !StringUtils.isBlank(completedSurveyItem.getValue()) || completedSurveyItem.getFiles() != null)
+                .filter(completedSurveyItem -> !isBlank(completedSurveyItem.getValue()) || completedSurveyItem.getFiles() != null)
                 .forEach(completedSurveyItem -> save(assignmentId, completedSurveyItem));
     }
 
     private void save(long assignmentId, CompletedSurveyItem completedSurveyItem) {
+        logger.info("Saving survey item {} in assignment {}", completedSurveyItem.getSurveyItemId(), assignmentId);
         Optional<Response> responseValue = Optional.ofNullable(
                 responseRepository.findByAssignment(assignmentId,
                         completedSurveyItem.getSurveyItemId()));
         if (completedSurveyItem.isFilesResponse()) {
+            if (!isBlank(completedSurveyItem.getValue())) {
+                newArrayList(completedSurveyItem.getValue().split(","))
+                        .stream()
+                        .filter(s -> !completedSurveyItem.getValidValues().contains(s))
+                        .forEach(s -> datastoreService.delete(s));
+            }
             StringJoiner fileValues = new StringJoiner(",");
-            newArrayList(completedSurveyItem.getValue().split(","))
-                .stream()
-                .filter(s -> !completedSurveyItem.getValidValues().contains(s))
-                .forEach(s -> datastoreService.delete(s));
             completedSurveyItem.getValidValues().stream().forEach(s -> fileValues.add(s));
             completedSurveyItem.getFiles().stream()
                 .filter(file -> !file.isEmpty())
