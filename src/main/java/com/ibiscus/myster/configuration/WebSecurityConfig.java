@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.Filter;
 
@@ -35,9 +36,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/shopper/**").hasRole("SHOPPER")
-                .and().formLogin().loginPage("/login").successHandler(getSuccessHandler())
-                .and().rememberMe().alwaysRemember(true)
-                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                .and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .successHandler(getSuccessHandler())
+                .and()
+                    .logout()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                .and()
+                    .rememberMe()
+                    .alwaysRemember(true)
+                .and()
+                    .csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
     private AuthenticationSuccessHandler getSuccessHandler() {
@@ -46,8 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //auth.inMemoryAuthentication().withUser("martinvalletta@gmail.com").password("test").roles("SHOPPER");
-        //auth.userDetailsService(getUserService());
         auth.authenticationProvider(authenticationProvider());
     }
 
@@ -63,15 +72,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new UserService(userRepository);
     }
 
-    /*@Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withUsername("martinvalletta@gmail.com")
-                        .password("test")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(newArrayList(user));
-    }*/
 }
