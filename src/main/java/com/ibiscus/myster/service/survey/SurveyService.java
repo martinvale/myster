@@ -1,8 +1,6 @@
 package com.ibiscus.myster.service.survey;
 
 import com.ibiscus.myster.model.survey.*;
-import com.ibiscus.myster.repository.survey.item.ItemOptionRepository;
-import com.ibiscus.myster.repository.survey.data.ResponseRepository;
 import com.ibiscus.myster.web.admin.survey.SurveyDto;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +16,8 @@ public class SurveyService {
 
     private final SurveyRepository surveyRepository;
 
-    private final ItemOptionRepository itemOptionRepository;
-
-    private final ResponseRepository responseRepository;
-
-    public SurveyService(SurveyRepository pollRepository, ItemOptionRepository itemOptionRepository,
-                         ResponseRepository responseRepository) {
+    public SurveyService(SurveyRepository pollRepository) {
         this.surveyRepository = pollRepository;
-        this.itemOptionRepository = itemOptionRepository;
-        this.responseRepository = responseRepository;
     }
 
     public SurveyDto get(long id) {
