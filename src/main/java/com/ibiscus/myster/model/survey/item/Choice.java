@@ -12,21 +12,21 @@ public class Choice {
     @GeneratedValue
     private long id;
 
-    @Column(name = "item_option_id")
-    private long itemOptionId;
+    @Column(name = "survey_item_id")
+    private long surveyItemId;
 
     @Column(name = "description", length = 2000, nullable = false)
     private String description;
 
     @Column(name = "value", length = 100, nullable = false)
-    private String value;
+    private Integer value;
 
     Choice() {
     }
 
-    public Choice(long id, long itemOptionId, String description, String value) {
+    public Choice(long id, long surveyItemId, String description, Integer value) {
         this.id = id;
-        this.itemOptionId = itemOptionId;
+        this.surveyItemId = surveyItemId;
         this.description = description;
         this.value = value;
     }
@@ -36,14 +36,14 @@ public class Choice {
     }
 
     public long getSurveyItemId() {
-        return itemOptionId;
+        return surveyItemId;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public String getValue() {
+    public Integer getValue() {
         return value;
     }
 

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Myster :: Dashboard</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"></link>
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"></link>
+
+    <link rel="stylesheet" th:href="@{/css/shopper.css}"></link>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script th:src="@{/js/raphael-2.1.4.min.js}"></script>
+    <script th:src="@{/js/justgage.js}"></script>
+</head>
+<body>
+<nav th:include="assignment/header" class="navbar navbar-inverse navbar-fixed-top">
+</nav>
+<div id="dashboard" class="container main">
+    <div class="container">
+        <form action="/action_page.php">
+            <div class="form-group">
+                <label for="survey">Cliente/Cuestionario:</label>
+                <select id="survey" class="form-control">
+                    <option th:each="survey : ${surveys}" th:value="${survey.name}" th:text="${survey.name}">Demo survey</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default pull-right">Calcular</button>
+        </form>
+    </div>
+    <div class="container">
+        <div id="gauge">
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Resultado por &aacute;rea de evaluaci&oacute;n</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="25%">&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th width="5%">Actual</th>
+                    <th width="5%">Anterior</th>
+                    <th width="5%">Diferencia</th>
+                    <th width="5%">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="summary : ${categorySummary}" th:with="porcentage=${#numbers.formatDecimal(summary.get('porcentage'),2,0)},previousPorcentage=${#numbers.formatDecimal(summary.get('previousPorcentage'),2,0)}">
+                    <td th:text="${summary.get('name')}">Limpieza</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                                    th:attr="aria-valuenow=${porcentage}" th:style="|width: ${porcentage}%;|" style="width: 60%;">
+                                <span th:text="${porcentage}">60</span>%
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-right" th:text="|${porcentage}%|">60</td>
+                    <td class="text-right" th:text="|${previousPorcentage}%|">57</td>
+                    <td class="text-right" th:with="difference=${#numbers.formatDecimal(summary.get('porcentage') - summary.get('previousPorcentage'),2,0)}" th:text="|${difference}%|">-3</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+  /*<![CDATA[*/
+
+    /*Vue.component('category-item', {
+      props: ['category']
+    });
+
+    Vue.component('item-item', {
+      props: ['item']
+    });*/
+
+    var app = new Vue({
+      el: '#dashboard',
+      data: {
+        surveys: [[${surveys}]]
+      }
+    })
+
+  /*]]>*/
+
+	$(function () {
+      var gauge = new JustGage({
+        id: "gauge",
+        value: [[${generalScore}]],
+        min: 0,
+        max: 100,
+        label: "%",
+        levelColors: [
+          "#ff0000",
+          "#ffff00",
+          "#53ff1a"
+        ],
+        hideMinMax: false
+        /*startAnimationTime: 2000,
+        startAnimationType: ">",
+        refreshAnimationTime: 1000,
+        refreshAnimationType: "bounce"*/
+      });
+	});
+
+</script>
+</body>
+</html>

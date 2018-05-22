@@ -16,6 +16,6 @@ public class SingleChoiceSurveyTaskResponse extends SurveyTaskResponse {
 
     @Override
     public Optional<String> getValue() {
-        return component.getSelectedItem().map(choice -> choice.getValue());
+        return component.getSelectedItem().map(choice -> String.valueOf(choice.getValue()));
     }
 }

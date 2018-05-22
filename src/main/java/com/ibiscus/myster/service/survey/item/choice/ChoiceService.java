@@ -1,6 +1,5 @@
 package com.ibiscus.myster.service.survey.item.choice;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ibiscus.myster.model.survey.item.Choice;
@@ -23,7 +22,7 @@ public class ChoiceService {
     }
 
     public List<Choice> findByItemOption(long itemOptionId) {
-        return choiceRepository.findByItemOptionId(itemOptionId);
+        return choiceRepository.findBySurveyItemId(itemOptionId);
     }
 
 }

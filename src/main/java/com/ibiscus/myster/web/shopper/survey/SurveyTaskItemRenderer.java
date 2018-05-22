@@ -38,7 +38,7 @@ public class SurveyTaskItemRenderer implements Visitor {
         RadioButtonGroup<Choice> radioButton = new RadioButtonGroup<>(singleChoice.getTitle(), values);
         radioButton.setRequiredIndicatorVisible(true);
         if (singleChoiceTaskItem.getValue().isPresent()) {
-            radioButton.setSelectedItem(singleChoice.getChoiceByValue(singleChoiceTaskItem.getValue().get()));
+            radioButton.setSelectedItem(singleChoice.getChoiceByValue(Integer.valueOf(singleChoiceTaskItem.getValue().get())));
         }
         radioButton.setItemCaptionGenerator(item -> item.getDescription());
         surveyItemContainer.addComponent(radioButton);

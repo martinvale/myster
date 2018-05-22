@@ -4,6 +4,8 @@ import org.apache.commons.text.RandomStringGenerator;
 
 import com.ibiscus.myster.model.survey.item.Choice;
 
+import static org.apache.commons.lang3.RandomUtils.nextInt;
+
 public class ChoiceBuilder {
 
     private long id;
@@ -13,8 +15,7 @@ public class ChoiceBuilder {
     private String description = new RandomStringGenerator.Builder()
         .withinRange('a', 'z').build().generate(10);
 
-    private String value = new RandomStringGenerator.Builder()
-        .withinRange('a', 'z').build().generate(5);
+    private Integer value = nextInt(0, 101);
 
     public ChoiceBuilder withId(long id) {
         this.id = id;
@@ -31,7 +32,7 @@ public class ChoiceBuilder {
         return this;
     }
 
-    public ChoiceBuilder withValue(String value) {
+    public ChoiceBuilder withValue(Integer value) {
         this.value = value;
         return this;
     }

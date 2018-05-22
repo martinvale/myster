@@ -9,7 +9,7 @@ public class ChoiceDto {
     private Optional<Long> id;
     private long itemId;
     private String description;
-    private String value;
+    private int value;
 
     public ChoiceDto(long itemId) {
         this.id = Optional.empty();
@@ -31,11 +31,11 @@ public class ChoiceDto {
         this.description = description;
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

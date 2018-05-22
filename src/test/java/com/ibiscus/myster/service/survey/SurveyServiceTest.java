@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 import com.ibiscus.myster.configuration.ServiceConfig;
+import com.ibiscus.myster.configuration.TestConfig;
 import com.ibiscus.myster.repository.survey.SurveyRepository;
 import com.ibiscus.myster.web.admin.survey.SurveyDto;
 import org.junit.Test;
@@ -21,13 +22,13 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = ServiceConfig.class)
+@ContextConfiguration(classes = {ServiceConfig.class, TestConfig.class})
 public class SurveyServiceTest {
 
     @Autowired
     private SurveyService surveyService;
 
-    @MockBean
+    @Autowired
     private SurveyRepository surveyRepository;
 
     @Test

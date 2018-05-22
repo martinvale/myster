@@ -11,7 +11,7 @@ create table category (
   name varchar(100) not null,
   position int not null,
   primary key(id),
-  constraint fk_category_survey_id foreign key fk_category_survey_id (survey_id) references survey(id)
+  constraint fk_category_survey foreign key fk_category_survey (survey_id) references survey(id)
 );
 
 create table survey_item (
@@ -22,22 +22,24 @@ create table survey_item (
   description varchar(2000) default null,
   type varchar(20) not null,
   primary key(id),
-  constraint fk_survey_item_category_id foreign key fk_survey_item_category_id (category_id) references category(id)
+  constraint fk_survey_item_category foreign key fk_survey_item_category (category_id) references category(id)
 );
 
 create table choice (
   id bigint not null auto_increment,
-  item_option_id bigint not null,
+  survey_item_id bigint not null,
   description varchar(2000) not null,
-  value varchar(100) not null,
+  value int not null,
   primary key(id),
-  constraint fk_item_option foreign key fk_item_option (item_option_id) references single_choice(id)
+  constraint fk_choice_survey_item foreign key fk_item_option (item_option_id) references single_choice(id)
 );
 
 create table user (
   id bigint not null auto_increment,
   username varchar(100) not null,
   password varchar(50) not null,
+  first_name varchar(70) not null,
+  last_name varchar(70) not null,
   enabled bit(1),
   primary key(id)
 );
@@ -45,25 +47,23 @@ create table user (
 create table shopper (
   id bigint not null auto_increment,
   user_id bigint not null,
-  first_name varchar(70) not null,
-  last_name varchar(70) not null,
   primary key(id),
-  constraint fk_user foreign key fk_user (user_id) references user(id)
+  constraint fk_shopper_user foreign key fk_shopper_user (user_id) references user(id)
 );
 
 create table assignment (
   id bigint not null auto_increment,
   shopper_id bigint not null,
   survey_id bigint not null,
-  location_id bigint not null,
+  point_of_sale_id bigint not null,
   state varchar(10) not null,
   visit_date date default null,
   in_time time default null,
   out_time time default null,
   primary key(id),
-  constraint fk_shopper foreign key fk_shopper (shopper_id) references shopper(id),
-  constraint fk_survey foreign key fk_survey (survey_id) references survey(id),
-  constraint fk_location foreign key fk_location (location_id) references location(id)
+  constraint fk_assignment_shopper foreign key fk_assignment_shopper (shopper_id) references shopper(id),
+  constraint fk_assignment_survey foreign key fk_assignment_survey (survey_id) references survey(id),
+  constraint fk_assignment_point_of_sale foreign key fk_assignment_point_of_sale (point_of_sale_id) references point_of_sale(id)
 );
 
 create table company (
@@ -72,27 +72,33 @@ create table company (
   primary key(id)
 );
 
-create table location (
+create table point_of_sale (
   id bigint not null auto_increment,
   company_id bigint not null,
   address varchar(1000) not null,
   primary key(id),
-  constraint fk_company foreign key fk_company (company_id) references company(id)
+  constraint fk_point_of_sale_company foreign key fk_point_of_sale_company (company_id) references company(id)
 );
 
 create table response (
   id bigint not null auto_increment,
   assignment_id bigint not null,
   survey_item_id bigint not null,
+  type varchar(20) not null,
+  choice_id bigint default null,
   value varchar(2000) not null,
   primary key(id),
-  constraint fk_assigment foreign key fk_assignment (assignment_id) references assignment(id),
-  constraint fk_survey_item foreign key fk_survey_item (survey_item_id) references survey_item(id)
+  constraint fk_response_assigment foreign key fk_response_assignment (assignment_id) references assignment(id),
+  constraint fk_response_survey_item foreign key fk_response_survey_item (survey_item_id) references survey_item(id)
+  constraint fk_response_choice foreign key fk_response_choice (choice_id) references choice(id)
 );
 
-insert into user (username, password, enabled) values ('noelice@msn.com', 'noelice', 1);
-insert into user (username, password, enabled) values ('martinvalletta@gmail.com', 'martin', 1);
-insert into shopper (user_id, first_name, last_name) select id, 'Noelice', 'Correia de Oliveira' from user where username = 'noelice@msn.com';
+insert into user (username, password, first_name, last_name, enabled) values ('noelice@msn.com', 'noelice', 'Noelice', 'Correia de Oliveira', 1);
+insert into user (username, password, first_name, last_name, enabled) values ('martinvalletta@gmail.com', 'test', 'Martin Horacio', 'Valletta', 1);
+insert into user (username, password, first_name, last_name, enabled) values ('jlroffo@shopnchek.com.ar', 'jlroffo', 'Jose Luis', 'Roffo', 1);
+insert into shopper (user_id) select id from user where username = 'noelice@msn.com';
+insert into shopper (user_id) select id from user where username = 'martinvalletta@gmail.com';
+insert into shopper (user_id) select id from user where username = 'jlroffo@shopnchek.com.ar';
 
 insert into survey(name, enabled) values ('Carrefour', 1);
 
@@ -102,14 +108,23 @@ insert into category (survey_id, name, position) select id, 'Salon de venta', 3 
 insert into category (survey_id, name, position) select id, 'Caja', 4 from survey where name = 'Carrefour';
 insert into category (survey_id, name, position) select id, 'Evaluacion subjetiva', 5 from survey where name = 'Carrefour';
 
-insert into survey_item (survey_id, title, description, type) select id,
+insert into survey_item (category_id, position, title, description, type) select id, 0,
     '¿La vereda de la tienda se encontraba limpia y en buen estado?',
     'La vereda debe estar limpia, sin basura. No debe haber baldosas rotas.', 'SINGLE_CHOICE'
-    from survey where name = 'Carrefour';
-insert into choice(item_option_id, description, value) select id, 'Si', '1' from survey_item
+    from category where name = 'Exterior de la tienda';
+insert into choice(item_option_id, description, value) select id, 'Si', 100 from survey_item
     where title = '¿La vereda de la tienda se encontraba limpia y en buen estado?';
-insert into choice(item_option_id, description, value) select id, 'No', '0' from survey_item
+insert into choice(item_option_id, description, value) select id, 'No', 0 from survey_item
     where title = '¿La vereda de la tienda se encontraba limpia y en buen estado?';
+
+insert into survey_item (category_id, position, title, description, type) select id, 0,
+    '¿La marquesina exterior estaba en buen estado?',
+    'Vea una foto de la marquesina exterior en su Guía de Trabajo. La marquesina está compuesta por el cartel de Carrefour que se encuentra en el frente de la tienda.', 'SINGLE_CHOICE'
+    from category where name = 'Exterior de la tienda';
+insert into choice(item_option_id, description, value) select id, 'Si', 100 from survey_item
+    where title = '¿La marquesina exterior estaba en buen estado?';
+insert into choice(item_option_id, description, value) select id, 'No', 0 from survey_item
+    where title = '¿La marquesina exterior estaba en buen estado?';
 
 insert into survey_item (survey_id, title, description, type) select id,
     'Comentarios generales:', null, 'TEXT' from survey where name = 'Carrefour';

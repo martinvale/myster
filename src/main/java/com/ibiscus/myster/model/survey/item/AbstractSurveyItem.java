@@ -26,7 +26,7 @@ public abstract class AbstractSurveyItem implements SurveyItem {
     AbstractSurveyItem() {
     }
 
-    protected AbstractSurveyItem(long id, long categoryId, int position, String title, String description, ItemType type) {
+    protected AbstractSurveyItem(long id, long categoryId, int position, String title, String description) {
         this.id = id;
         this.categoryId = categoryId;
         this.position = position;

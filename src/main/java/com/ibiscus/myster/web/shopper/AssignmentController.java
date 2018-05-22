@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,7 +57,7 @@ public class AssignmentController {
     @PutMapping("/{assignmentId}/sent")
     @ResponseBody
     public Map<String, Boolean> send(@PathVariable long assignmentId) {
-        assignmentService.send(assignmentId);
+        assignmentService.close(assignmentId);
         return Collections.singletonMap("success", true);
     }
 }

@@ -15,7 +15,7 @@ public class TextItem extends AbstractSurveyItem {
     }
 
     public TextItem(long id, long categoryId, int position, String title, String description) {
-        super(id, categoryId, position, title, description, ItemType.TEXT);
+        super(id, categoryId, position, title, description);
     }
 
 }

@@ -17,8 +17,8 @@ import java.sql.Time;
 @Entity(name = "assignment")
 public class Assignment {
 
-    public static enum STATE {
-        PENDING, STARTED, FINISHED, SENT
+    public enum STATE {
+        PENDING, STARTED, FINISHED, CLOSED
     }
 
     @Id
@@ -117,8 +117,8 @@ public class Assignment {
         state = STATE.STARTED;
     }
 
-    public void sent() {
-        state = STATE.SENT;
+    public void close() {
+        state = STATE.CLOSED;
     }
 
     public boolean isFinished() {
@@ -129,8 +129,8 @@ public class Assignment {
         return state == STATE.STARTED;
     }
 
-    public boolean isSent() {
-        return state == STATE.SENT;
+    public boolean isClosed() {
+        return state == STATE.CLOSED;
     }
 
     public static final class Builder {
@@ -155,6 +155,11 @@ public class Assignment {
             visitDate = value.getVisitDate();
             inTime = value.getInTime();
             outTime = value.getOutTime();
+            return this;
+        }
+
+        public Builder withId(long id) {
+            this.id = id;
             return this;
         }
 

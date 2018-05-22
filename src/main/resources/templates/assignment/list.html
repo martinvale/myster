@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   <title>Myster :: Survey</title>
 
   <!-- Latest compiled and minified CSS -->
@@ -75,9 +77,15 @@
         },
         send: function (assignmentId) {
           var me = this;
+          var token = $("meta[name='_csrf']").attr("content");
+          var header = $("meta[name='_csrf_header']").attr("content");
           $.ajax({
             url: assignmentId + '/sent',
             type: 'PUT',
+            beforeSend: function(xhr) {
+              // here it is
+              xhr.setRequestHeader(header, token);
+            },
             success: function(data) {
               var index = me.findIndexById(assignmentId);
               me.tasks.splice(index, 1);

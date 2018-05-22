@@ -1,16 +1,12 @@
 package com.ibiscus.myster.model.survey.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import com.ibiscus.myster.model.survey.item.SingleChoice;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity(name = "response")
-public class Response {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", length = 20)
+public abstract class Response {
 
     @Id
     @GeneratedValue
@@ -22,22 +18,26 @@ public class Response {
     @Column(name = "survey_item_id")
     private long surveyItemId;
 
-    @Column(name = "value", length = 2000, nullable = false)
-    private String value;
+    @Column(name = "creation_date")
+    private Date creationDate;
+
+    @Column(name = "modification_date")
+    private Date modificationDate;
 
     Response() {}
 
-    public Response(long assignmentId, long surveyItemId, String value) {
+    public Response(long assignmentId, long surveyItemId) {
         this.assignmentId = assignmentId;
         this.surveyItemId = surveyItemId;
-        this.value = value;
+        this.creationDate = new Date();
+        this.modificationDate = new Date();
     }
 
-    public Response(long id, long assignmentId, long surveyItemId, String value) {
+    public Response(long id, long assignmentId, long surveyItemId) {
         this.id = id;
         this.assignmentId = assignmentId;
         this.surveyItemId = surveyItemId;
-        this.value = value;
+        this.modificationDate = new Date();
     }
 
     public long getId() {
@@ -52,7 +52,13 @@ public class Response {
         return surveyItemId;
     }
 
-    public String getValue() {
-        return value;
+    public Date getCreationDate() {
+        return creationDate;
     }
+
+    public Date getModificationDate() {
+        return modificationDate;
+    }
+
+    public abstract String getValue();
 }

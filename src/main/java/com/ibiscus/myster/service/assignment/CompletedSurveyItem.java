@@ -5,10 +5,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class CompletedSurveyItem {
 
     private long surveyItemId;
+
+    private String type;
 
     private String value;
 
@@ -24,6 +27,14 @@ public class CompletedSurveyItem {
 
     public void setSurveyItemId(long surveyItemId) {
         this.surveyItemId = surveyItemId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getValue() {
@@ -56,5 +67,18 @@ public class CompletedSurveyItem {
 
     public void setFilesResponse(boolean value) {
         filesResponse = value;
+    }
+
+    public boolean hasContent() {
+        return !isBlank(getValue()) || hasFiles();
+    }
+
+    private boolean hasFiles() {
+        return getFiles() != null
+                && (!getValidValues().isEmpty() || getFiles().stream().filter(file -> !file.isEmpty()).findFirst().isPresent());
+    }
+
+    public boolean isDiscrete() {
+        return "DISCRETE".equals(type);
     }
 }

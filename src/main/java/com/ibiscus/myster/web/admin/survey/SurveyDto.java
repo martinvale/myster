@@ -20,6 +20,10 @@ public class SurveyDto {
         this.enabled = survey.isEnabled();
     }
 
+    public Optional<Long> getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }

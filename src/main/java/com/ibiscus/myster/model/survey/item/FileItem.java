@@ -12,6 +12,6 @@ public class FileItem extends AbstractSurveyItem {
     }
 
     public FileItem(long id, long categoryId, int position, String title, String description) {
-        super(id, categoryId, position, title, description, ItemType.FILE);
+        super(id, categoryId, position, title, description);
     }
 }

@@ -5,30 +5,30 @@ import java.util.List;
 import com.ibiscus.myster.model.survey.item.AbstractSurveyItem;
 import com.ibiscus.myster.model.survey.item.SurveyItem;
 import com.ibiscus.myster.model.survey.item.SingleChoice;
-import com.ibiscus.myster.repository.survey.item.ItemOptionRepository;
+import com.ibiscus.myster.repository.survey.item.SurveyItemRepository;
 
 public class ItemOptionService {
 
-    private final ItemOptionRepository itemOptionRepository;
+    private final SurveyItemRepository surveyItemRepository;
 
-    public ItemOptionService(ItemOptionRepository itemOptionRepository) {
-        this.itemOptionRepository = itemOptionRepository;
+    public ItemOptionService(SurveyItemRepository surveyItemRepository) {
+        this.surveyItemRepository = surveyItemRepository;
     }
 
     public SurveyItem get(long itemOptionId) {
-        return itemOptionRepository.findOne(itemOptionId);
+        return surveyItemRepository.findOne(itemOptionId);
     }
 
     public AbstractSurveyItem save(AbstractSurveyItem surveyItem) {
-        return itemOptionRepository.save(surveyItem);
+        return surveyItemRepository.save(surveyItem);
     }
 
     public List<AbstractSurveyItem> findByCategoryId(long surveyId) {
-        return itemOptionRepository.findByCategoryIdOrderByPositionAsc(surveyId);
+        return surveyItemRepository.findByCategoryIdOrderByPositionAsc(surveyId);
     }
 
     public void delete(SurveyItem surveyItem) {
-        itemOptionRepository.delete((SingleChoice) surveyItem);
+        surveyItemRepository.delete((SingleChoice) surveyItem);
     }
 
 }

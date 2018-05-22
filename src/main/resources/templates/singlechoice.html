@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
   <div th:fragment="body">
+    <input type="hidden" th:name="|completedSurveyItems[${item.index}].type|" value="DISCRETE"/>
     <div th:each="choice : ${item.choices}" class="radio">
-      <label><input type="radio" th:name="|completedSurveyItems[${item.index}].value|" th:value="${choice.value}" th:checked="${choice.value == item.value}" ></input><span th:text="${choice.description}">Si</span></label>
+      <label><input type="radio" th:name="|completedSurveyItems[${item.index}].value|" th:value="${choice.value}" th:checked="${#strings.toString(choice.value) == item.value}" ></input><span th:text="${choice.description}">Si</span></label>
     </div>
   </div>
 </body>

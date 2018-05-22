@@ -14,21 +14,20 @@ import com.ibiscus.myster.model.shopper.Shopper;
 import com.ibiscus.myster.model.survey.*;
 import com.ibiscus.myster.model.survey.category.Category;
 import com.ibiscus.myster.model.survey.category.CategoryDto;
+import com.ibiscus.myster.model.survey.data.DiscreteResponse;
+import com.ibiscus.myster.model.survey.data.OpenResponse;
 import com.ibiscus.myster.model.survey.data.Response;
 import com.ibiscus.myster.model.survey.item.*;
 import com.ibiscus.myster.repository.category.CategoryRepository;
 import com.ibiscus.myster.repository.security.UserRepository;
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.repository.survey.data.ResponseRepository;
-import com.ibiscus.myster.repository.survey.item.ItemOptionRepository;
+import com.ibiscus.myster.repository.survey.item.SurveyItemRepository;
 import com.ibiscus.myster.service.communication.MailSender;
-import com.ibiscus.myster.service.security.UserInfo;
 import com.ibiscus.myster.service.survey.data.DatastoreService;
 import com.ibiscus.myster.web.admin.survey.SurveyAssignment;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,12 +37,9 @@ import com.ibiscus.myster.repository.assignment.AssignmentRepository;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.ibiscus.myster.model.survey.Assignment.Builder.newAssignmentBuilder;
-import static com.ibiscus.myster.model.survey.Assignment.STATE.FINISHED;
-import static com.ibiscus.myster.model.survey.Assignment.STATE.PENDING;
-import static com.ibiscus.myster.model.survey.Assignment.STATE.SENT;
+import static com.ibiscus.myster.model.survey.Assignment.STATE.*;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.Validate.isTrue;
 
 @Service
@@ -51,31 +47,37 @@ public class AssignmentService {
 
     private static final Logger logger = LoggerFactory.getLogger(AssignmentService.class);
 
-    @Autowired
-    private AssignmentRepository assignmentRepository;
+    private final AssignmentRepository assignmentRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-    @Autowired
-    private ItemOptionRepository itemOptionRepository;
+    private final SurveyItemRepository surveyItemRepository;
 
-    @Autowired
-    private ResponseRepository responseRepository;
+    private final ResponseRepository responseRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ShopperRepository shopperRepository;
+    private final ShopperRepository shopperRepository;
 
-    @Autowired
-    private MailSender mailSender;
+    private final MailSender mailSender;
 
-    @Autowired
-    private DatastoreService datastoreService;
+    private final DatastoreService datastoreService;
 
     private final String siteUrl = "http://localhost:8080/";
+
+    public AssignmentService(AssignmentRepository assignmentRepository, CategoryRepository categoryRepository,
+                             SurveyItemRepository surveyItemRepository, ResponseRepository responseRepository,
+                             UserRepository userRepository, ShopperRepository shopperRepository, MailSender mailSender,
+                             DatastoreService datastoreService) {
+        this.assignmentRepository = assignmentRepository;
+        this.categoryRepository = categoryRepository;
+        this.surveyItemRepository = surveyItemRepository;
+        this.responseRepository = responseRepository;
+        this.userRepository = userRepository;
+        this.shopperRepository = shopperRepository;
+        this.mailSender = mailSender;
+        this.datastoreService = datastoreService;
+    }
 
     public List<TaskDescription> findByUsername(String username) {
         List<TaskDescription> assignmentDescriptors = newArrayList();
@@ -83,7 +85,7 @@ public class AssignmentService {
         Shopper shopper = shopperRepository.getByUserId(user.getId());
         List<Assignment> assignments = assignmentRepository.findByShopperId(shopper.getId());
         for (Assignment assignment : assignments) {
-            if (!assignment.isSent()) {
+            if (!assignment.isClosed()) {
                 Location location = assignment.getLocation();
                 assignmentDescriptors.add(new TaskDescription(assignment.getId(), assignment.getSurvey().getName(),
                         location.getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState())));
@@ -100,7 +102,7 @@ public class AssignmentService {
         List<Category> categories = categoryRepository.findBySurveyId(survey.getId());
         int index = 0;
         for (Category category : categories) {
-            List<AbstractSurveyItem> items = itemOptionRepository.findByCategoryIdOrderByPositionAsc(category.getId());
+            List<AbstractSurveyItem> items = surveyItemRepository.findByCategoryIdOrderByPositionAsc(category.getId());
             List<SurveyItemDto> taskItems = newArrayList();
             for (SurveyItem item : items) {
                 Optional<Response> response = Optional.ofNullable(
@@ -112,7 +114,7 @@ public class AssignmentService {
                 if (item instanceof SingleChoice) {
                     List<ChoiceDto> choicesDtos = ((SingleChoice) item).getChoices()
                             .stream()
-                            .map(choice -> new ChoiceDto(choice.getDescription(), choice.getValue()))
+                            .map(choice -> new ChoiceDto(choice.getDescription(), choice.getId()))
                             .collect(Collectors.toList());
                     taskItems.add(new SingleChoiceDto(item.getId(), item.getClass().getSimpleName(), item.getTitle(),
                             item.getDescription(), value, index++, response.isPresent(), choicesDtos));
@@ -169,18 +171,18 @@ public class AssignmentService {
 
     public void save(long assignmentId, CompletedSurvey completedSurvey) {
         logger.info("Saving survey assignment {}", assignmentId);
+        completedSurvey.getCompletedSurveyItems().stream()
+                .filter(completedSurveyItem -> completedSurveyItem.hasContent())
+                .forEach(completedSurveyItem -> save(assignmentId, completedSurveyItem));
         Assignment assignment = assignmentRepository.findOne(assignmentId);
         Assignment filledAssignment = newAssignmentBuilder()
                 .withAssignment(assignment)
                 .withVisitDate(new Date(completedSurvey.getVisitDate().getTime()))
                 .withInTime(Time.valueOf(LocalTime.of(completedSurvey.getInHour(), completedSurvey.getInMinute())))
                 .withOutTime(Time.valueOf(LocalTime.of(completedSurvey.getOutHour(), completedSurvey.getOutMinute())))
-                .withState(PENDING)
+                .withState(completedSurvey.isComplete() ? FINISHED : PENDING)
                 .build();
         assignmentRepository.save(filledAssignment);
-        completedSurvey.getCompletedSurveyItems().stream()
-                .filter(completedSurveyItem -> !isBlank(completedSurveyItem.getValue()) || completedSurveyItem.getFiles() != null)
-                .forEach(completedSurveyItem -> save(assignmentId, completedSurveyItem));
     }
 
     private void save(long assignmentId, CompletedSurveyItem completedSurveyItem) {
@@ -195,20 +197,34 @@ public class AssignmentService {
                         .filter(s -> !completedSurveyItem.getValidValues().contains(s))
                         .forEach(s -> datastoreService.delete(s));
             }
-            StringJoiner fileValues = new StringJoiner(",");
-            completedSurveyItem.getValidValues().stream().forEach(s -> fileValues.add(s));
-            completedSurveyItem.getFiles().stream()
-                .filter(file -> !file.isEmpty())
-                .forEach(file -> fileValues.add(datastoreService.save("shopncheck/" + assignmentId + "/", file)));
-            completedSurveyItem.setValue(fileValues.toString());
+            if (completedSurveyItem.getFiles().stream().filter(file -> !file.isEmpty()).findAny().isPresent()) {
+                StringJoiner fileValues = new StringJoiner(",");
+                completedSurveyItem.getValidValues().stream().forEach(s -> fileValues.add(s));
+                completedSurveyItem.getFiles().stream()
+                        .filter(file -> !file.isEmpty())
+                        .forEach(file -> fileValues.add(datastoreService.save("shopncheck/" + assignmentId + "/", file)));
+                completedSurveyItem.setValue(fileValues.toString());
+            }
         }
 
         Response response;
         if (responseValue.isPresent()) {
-            response = new Response(responseValue.get().getId(), assignmentId, completedSurveyItem.getSurveyItemId(),
-                    completedSurveyItem.getValue());
+            if (completedSurveyItem.isDiscrete()) {
+                response = new DiscreteResponse(responseValue.get().getId(), assignmentId, completedSurveyItem.getSurveyItemId(),
+                        Long.valueOf(completedSurveyItem.getValue()));
+            } else {
+                response = new OpenResponse(responseValue.get().getId(), assignmentId, completedSurveyItem.getSurveyItemId(),
+                        completedSurveyItem.getValue());
+            }
         } else {
-            response = new Response(assignmentId, completedSurveyItem.getSurveyItemId(), completedSurveyItem.getValue());
+            if (completedSurveyItem.isDiscrete()) {
+                response = new DiscreteResponse(assignmentId, completedSurveyItem.getSurveyItemId(),
+                        Long.valueOf(completedSurveyItem.getValue()));
+            } else {
+                response = new OpenResponse(assignmentId, completedSurveyItem.getSurveyItemId(),
+                        completedSurveyItem.getValue());
+
+            }
         }
         responseRepository.save(response);
     }
@@ -227,12 +243,12 @@ public class AssignmentService {
         return builder.toString();
     }
 
-    public void send(long assignmentId) {
+    public void close(long assignmentId) {
         Assignment assignment = assignmentRepository.findOne(assignmentId);
         validateAccess(assignment);
         Assignment sentAssignment = newAssignmentBuilder()
                 .withAssignment(assignment)
-                .withState(SENT)
+                .withState(CLOSED)
                 .build();
         assignmentRepository.save(sentAssignment);
     }

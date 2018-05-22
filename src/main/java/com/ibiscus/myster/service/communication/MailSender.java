@@ -39,7 +39,7 @@ public class MailSender {
             email.setHtmlMsg(message);
             email.send();
         } catch (EmailException e) {
-            LOGGER.error("Cannot send a mail to {} with subject {}", to, subject);
+            LOGGER.error("Cannot close a mail to {} with subject {}", to, subject);
             throw new RuntimeException(e);
         }
 

@@ -12,7 +12,7 @@ public class NumberItem extends AbstractSurveyItem {
     }
 
     public NumberItem(long id, long categoryId, int position, String title, String description) {
-        super(id, categoryId, position, title, description, ItemType.NUMBER);
+        super(id, categoryId, position, title, description);
     }
 
 }

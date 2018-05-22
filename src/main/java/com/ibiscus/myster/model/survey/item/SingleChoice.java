@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 @DiscriminatorValue("SINGLE_CHOICE")
 public class SingleChoice extends AbstractSurveyItem {
 
-    @OneToMany(mappedBy = "itemOptionId", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "surveyItemId", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Choice> choices;
 
     SingleChoice() {
@@ -22,7 +22,7 @@ public class SingleChoice extends AbstractSurveyItem {
     }
 
     public SingleChoice(long id, long categoryId, int position, String title, String description, List<Choice> choices) {
-        super(id, categoryId, position, title, description, ItemType.SINGLE_CHOICE);
+        super(id, categoryId, position, title, description);
         this.choices = new ArrayList<Choice>(choices);
     }
 
@@ -30,7 +30,7 @@ public class SingleChoice extends AbstractSurveyItem {
         return choices;
     }
 
-    public Choice getChoiceByValue(String value) {
+    public Choice getChoiceByValue(Integer value) {
         return choices.stream().filter(c -> c.getValue().equals(value)).findFirst().get();
     }
 

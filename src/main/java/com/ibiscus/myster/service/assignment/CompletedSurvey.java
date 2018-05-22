@@ -65,4 +65,8 @@ public class CompletedSurvey {
     public void setVisitDate(Date visitDate) {
         this.visitDate = visitDate;
     }
+
+    public boolean isComplete() {
+        return !completedSurveyItems.stream().filter(item -> !item.hasContent()).findAny().isPresent();
+    }
 }

@@ -3,9 +3,9 @@ package com.ibiscus.myster.model.survey.item;
 public class ChoiceDto {
 
     private String description;
-    private String value;
+    private Long value;
 
-    public ChoiceDto(String description, String value) {
+    public ChoiceDto(String description, Long value) {
         this.description = description;
         this.value = value;
     }
@@ -14,7 +14,7 @@ public class ChoiceDto {
         return description;
     }
 
-    public String getValue() {
+    public Long getValue() {
         return value;
     }
 

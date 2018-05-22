@@ -12,7 +12,7 @@ public class TimeItem extends AbstractSurveyItem {
     }
 
     public TimeItem(long id, long categoryId, int position, String title, String description) {
-        super(id, categoryId, position, title, description, ItemType.TIME);
+        super(id, categoryId, position, title, description);
     }
 
 }

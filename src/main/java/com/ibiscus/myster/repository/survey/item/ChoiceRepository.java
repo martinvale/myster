@@ -8,6 +8,6 @@ import com.ibiscus.myster.model.survey.item.Choice;
 
 public interface ChoiceRepository extends CrudRepository<Choice, Long> {
 
-    List<Choice> findByItemOptionId(long itemOptionId);
+    List<Choice> findBySurveyItemId(long surveyItemId);
 
 }
