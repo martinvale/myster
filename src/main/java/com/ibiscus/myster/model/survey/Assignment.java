@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.ibiscus.myster.model.company.Location;
+import com.ibiscus.myster.model.company.PointOfSale;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -33,8 +33,8 @@ public class Assignment {
     private long shopperId;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @JoinColumn(name = "point_of_sale_id")
+    private PointOfSale pointOfSale;
 
     @Column(name = "pay_rate")
     private float payRate;
@@ -54,18 +54,18 @@ public class Assignment {
     Assignment() {
     }
 
-    public Assignment(Survey survey, long shopperId, Location location) {
+    public Assignment(Survey survey, long shopperId, PointOfSale pointOfSale) {
         this.survey = survey;
         this.shopperId = shopperId;
-        this.location = location;
+        this.pointOfSale = pointOfSale;
     }
 
-    public Assignment(long id, Survey survey, long shopperId, Location location, float payRate, STATE state,
+    public Assignment(long id, Survey survey, long shopperId, PointOfSale pointOfSale, float payRate, STATE state,
                       Date visitDate, Time inTime, Time outTime) {
         this.id = id;
         this.survey = survey;
         this.shopperId = shopperId;
-        this.location = location;
+        this.pointOfSale = pointOfSale;
         this.payRate = payRate;
         this.state = state;
         this.visitDate = visitDate;
@@ -85,8 +85,8 @@ public class Assignment {
         return survey;
     }
 
-    public Location getLocation() {
-        return location;
+    public PointOfSale getPointOfSale() {
+        return pointOfSale;
     }
 
     public float getPayRate() {
@@ -138,7 +138,7 @@ public class Assignment {
         private long id;
         private Survey survey;
         private long shopperId;
-        private Location location;
+        private PointOfSale pointOfSale;
         private float payRate;
         private STATE state = STATE.PENDING;
         private Date visitDate;
@@ -149,7 +149,7 @@ public class Assignment {
             id = value.getId();
             survey = value.getSurvey();
             shopperId = value.getShopperId();
-            location = value.getLocation();
+            pointOfSale = value.getPointOfSale();
             payRate = value.getPayRate();
             state = value.getState();
             visitDate = value.getVisitDate();
@@ -184,7 +184,7 @@ public class Assignment {
         }
 
         public Assignment build() {
-            return new Assignment(id, survey, shopperId, location, payRate, state, visitDate,
+            return new Assignment(id, survey, shopperId, pointOfSale, payRate, state, visitDate,
                     inTime, outTime);
         }
 

@@ -53,21 +53,40 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="summary : ${categorySummary}" th:with="porcentage=${#numbers.formatDecimal(summary.get('porcentage'),2,0)},previousPorcentage=${#numbers.formatDecimal(summary.get('previousPorcentage'),2,0)}">
+                <tr th:each="summary : ${categorySummary}" th:with="percentage=${#numbers.formatDecimal(summary.get('percentage'),1,0)},previousPercentage=${#numbers.formatDecimal(summary.get('previousPercentage'),1,0)}">
                     <td th:text="${summary.get('name')}">Limpieza</td>
                     <td>
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-                                    th:attr="aria-valuenow=${porcentage}" th:style="|width: ${porcentage}%;|" style="width: 60%;">
-                                <span th:text="${porcentage}">60</span>%
+                                    th:attr="aria-valuenow=${percentage}" th:style="|width: ${percentage}%;|" style="width: 60%;">
+                                <span th:text="${percentage}">60</span>%
                             </div>
                         </div>
                     </td>
-                    <td class="text-right" th:text="|${porcentage}%|">60</td>
-                    <td class="text-right" th:text="|${previousPorcentage}%|">57</td>
-                    <td class="text-right" th:with="difference=${#numbers.formatDecimal(summary.get('porcentage') - summary.get('previousPorcentage'),2,0)}" th:text="|${difference}%|">-3</td>
+                    <td class="text-right" th:text="|${percentage}%|">60</td>
+                    <td class="text-right" th:text="|${previousPercentage}%|">57</td>
+                    <td class="text-right" th:with="difference=${#numbers.formatDecimal(summary.get('percentage') - summary.get('previousPercentage'),1,0)}" th:text="|${difference}%|">-3</td>
                     <td>&nbsp;</td>
                 </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Top Performers</div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th width="20%">Resultado</th>
+                <th width="40%">Nombre del punto de venta</th>
+                <th>Direcci&oacute;n</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="performer : ${topPerformers}" th:with="percentage=${#numbers.formatDecimal(performer.get('percentage'),2,0)}">
+                <td th:text="|${percentage}%|">60</td>
+                <td th:text="${performer.get('name')}">Congreso</td>
+                <td th:text="${performer.get('address')}">Corrientes 233</td>
+            </tr>
             </tbody>
         </table>
     </div>

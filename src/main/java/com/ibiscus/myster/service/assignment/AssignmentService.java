@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import com.ibiscus.myster.model.company.Location;
+import com.ibiscus.myster.model.company.PointOfSale;
 import com.ibiscus.myster.model.security.User;
 import com.ibiscus.myster.model.shopper.Shopper;
 import com.ibiscus.myster.model.survey.*;
@@ -86,9 +86,9 @@ public class AssignmentService {
         List<Assignment> assignments = assignmentRepository.findByShopperId(shopper.getId());
         for (Assignment assignment : assignments) {
             if (!assignment.isClosed()) {
-                Location location = assignment.getLocation();
+                PointOfSale pointOfSale = assignment.getPointOfSale();
                 assignmentDescriptors.add(new TaskDescription(assignment.getId(), assignment.getSurvey().getName(),
-                        location.getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState())));
+                        pointOfSale.getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState())));
             }
         }
         return assignmentDescriptors;
@@ -129,7 +129,7 @@ public class AssignmentService {
             taskCategories.add(new CategoryDto(category.getName(), taskItems));
         }
         TaskDescription taskDescription = new TaskDescription(assignmentId, survey.getName(),
-                assignment.getLocation().getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState()));
+                assignment.getPointOfSale().getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState()));
         java.util.Date visitDate = new java.util.Date();
         if (assignment.getVisitDate() != null) {
             visitDate = new java.util.Date(assignment.getVisitDate().getTime());
@@ -161,11 +161,11 @@ public class AssignmentService {
 
     public void assign(SurveyAssignment surveyAssignment) {
         Assignment assignment = new Assignment(surveyAssignment.getSurvey(), surveyAssignment.getShopper().getId(),
-                surveyAssignment.getLocation());
+                surveyAssignment.getPointOfSale());
         assignmentRepository.save(assignment);
         User user = userRepository.findOne(surveyAssignment.getShopper().getUserId());
         String bodyMessage = getAssignmentBodyMessage(assignment, surveyAssignment.getSurvey(),
-                surveyAssignment.getLocation());
+                surveyAssignment.getPointOfSale());
         mailSender.sendMail(user.getUsername(), "Asignacion de encuesta", bodyMessage);
     }
 
@@ -229,12 +229,12 @@ public class AssignmentService {
         responseRepository.save(response);
     }
 
-    private String getAssignmentBodyMessage(Assignment assignment, Survey survey, Location location) {
+    private String getAssignmentBodyMessage(Assignment assignment, Survey survey, PointOfSale pointOfSale) {
         StringBuilder builder = new StringBuilder("Se le ha asignado la siguiente encuesta: ")
                 .append(survey.getName())
                 .append("<br/><br/>")
                 .append("Punto de venta: ")
-                .append(location.getAddress())
+                .append(pointOfSale.getAddress())
                 .append("<br/><br/>")
                 .append("Se puede ver la encuesta completada en el siguiente link: ")
                 .append(siteUrl)

@@ -1,6 +1,6 @@
 package com.ibiscus.myster.web.admin.survey;
 
-import com.ibiscus.myster.model.company.Location;
+import com.ibiscus.myster.model.company.PointOfSale;
 import com.ibiscus.myster.model.shopper.Shopper;
 import com.ibiscus.myster.model.survey.Survey;
 
@@ -10,7 +10,7 @@ public class SurveyAssignment {
 
     private Shopper shopper;
 
-    private Location location;
+    private PointOfSale pointOfSale;
 
     public SurveyAssignment(Survey survey) {
         this.survey = survey;
@@ -24,12 +24,12 @@ public class SurveyAssignment {
         this.shopper = shopper;
     }
 
-    public Location getLocation() {
-        return location;
+    public PointOfSale getPointOfSale() {
+        return pointOfSale;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setPointOfSale(PointOfSale pointOfSale) {
+        this.pointOfSale = pointOfSale;
     }
 
     public Survey getSurvey() {

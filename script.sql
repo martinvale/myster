@@ -100,6 +100,10 @@ insert into shopper (user_id) select id from user where username = 'noelice@msn.
 insert into shopper (user_id) select id from user where username = 'martinvalletta@gmail.com';
 insert into shopper (user_id) select id from user where username = 'jlroffo@shopnchek.com.ar';
 
+insert into company (name) values ('Carrefour Express')
+insert into point_of_sale (company_id, name, address) select id, 'Congreso', 'Corrientes 345' from company;
+insert into point_of_sale (company_id, name, address) select id, 'Caballito', 'Hidalgo 80' from company;
+
 insert into survey(name, enabled) values ('Carrefour', 1);
 
 insert into category (survey_id, name, position) select id, 'Exterior de la tienda', 1 from survey where name = 'Carrefour';
@@ -130,7 +134,6 @@ insert into survey_item (survey_id, title, description, type) select id,
     'Comentarios generales:', null, 'TEXT' from survey where name = 'Carrefour';
 insert into survey_item (category_id, position, title, description, type) select id, 1,
     'Archivos adjuntos:', null, 'FILE' from category where name = 'Evaluacion subjetiva';
-
 
 insert into assignment (shopper_id, survey_id, location_id, state) values (1, 2, 1, 'PENDING');
 insert into response (assignment_id, item_option_id) values (1, 1);

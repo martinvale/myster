@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static com.ibiscus.myster.service.report.MonthInterval.currentMonthInterval;
 
 @Controller
@@ -49,11 +50,34 @@ public class DashboardController {
 
     private void addSummaryToResponse(Model model, SurveyDto surveyDto) {
         model.addAttribute("selectedSurvey", surveyDto);
-        List<Map<String, Object>> categorySummaryResult = reportService.getCategorySummary(surveyDto.getId().get(),
-                currentMonthInterval());
-        model.addAttribute("categorySummary", categorySummaryResult);
-        Double total = categorySummaryResult.stream().mapToDouble(value -> ((BigDecimal) value.get("porcentage")).doubleValue()).sum();
-        model.addAttribute("generalScore", total / categorySummaryResult.size());
+        model.addAllAttributes(getCurrentPhaseSummary(surveyDto.getId().get()));
+        MonthInterval previousMonthInterval = currentMonthInterval().getPreviousMonthInterval();
+        model.addAttribute("previousPhase", previousMonthInterval);
+        model.addAllAttributes(getTopPerformers(surveyDto.getId().get()));
+    }
+
+    private Map<String, Object> getTopPerformers(long surveyId) {
+        Map<String, Object> topPerformersAttribute = newHashMap();
+        MonthInterval currentMonthInterval = currentMonthInterval();
+        topPerformersAttribute.put("topPerformers", reportService.getTopPerformers(surveyId, currentMonthInterval));
+        return topPerformersAttribute;
+    }
+
+    private Map<String, Object> getCurrentPhaseSummary(long surveyId) {
+        Map<String, Object> attributes = newHashMap();
+        MonthInterval currentMonthInterval = currentMonthInterval();
+        attributes.put("currentPhase", currentMonthInterval);
+        List<Map<String, Object>> categorySummaryResult = reportService.getCategorySummary(surveyId,
+                currentMonthInterval);
+        attributes.put("categorySummary", categorySummaryResult);
+
+        Integer totalSurvey = reportService.getTotalScore(surveyId);
+        Integer totalPerCategory = categorySummaryResult.stream()
+                .mapToInt(value -> ((BigDecimal) value.get("average")).intValue())
+                .sum();
+        attributes.put("generalScore", BigDecimal.valueOf(totalPerCategory).multiply(BigDecimal.valueOf(100))
+            .divide(BigDecimal.valueOf(totalSurvey), 2, BigDecimal.ROUND_HALF_UP));
+        return attributes;
     }
 
 }

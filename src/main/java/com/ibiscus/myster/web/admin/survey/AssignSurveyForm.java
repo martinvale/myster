@@ -1,7 +1,7 @@
 package com.ibiscus.myster.web.admin.survey;
 
 import com.google.common.collect.Lists;
-import com.ibiscus.myster.model.company.Location;
+import com.ibiscus.myster.model.company.PointOfSale;
 import com.ibiscus.myster.model.shopper.Shopper;
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.web.admin.Form;
@@ -9,7 +9,6 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +27,10 @@ public class AssignSurveyForm extends Form<SurveyAssignment> {
         shopperSelector.setItemCaptionGenerator(item -> item.toString());
         addComponent(shopperSelector);
 
-        ComboBox<Location> pointOfSaleSelector = new ComboBox<>("Punto de venta");
-        List<Location> pointOfSales = new ArrayList<>();
-        pointOfSales.add(new Location(1, "Corrientes 345, Buenos Aires"));
-        pointOfSaleSelector.setDataProvider(new ListDataProvider<Location>(pointOfSales));
+        ComboBox<PointOfSale> pointOfSaleSelector = new ComboBox<>("Punto de venta");
+        List<PointOfSale> pointOfSales = new ArrayList<>();
+        pointOfSales.add(new PointOfSale(1, "Congreso", "Corrientes 345, Buenos Aires"));
+        pointOfSaleSelector.setDataProvider(new ListDataProvider<PointOfSale>(pointOfSales));
         pointOfSaleSelector.setItemCaptionGenerator(item -> item.getAddress());
         addComponent(pointOfSaleSelector);
 
