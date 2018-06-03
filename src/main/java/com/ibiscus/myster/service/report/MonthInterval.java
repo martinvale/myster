@@ -1,8 +1,12 @@
 package com.ibiscus.myster.service.report;
 
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.time.LocalDate;
 
 public class MonthInterval {
+
+    private static final Format FORMATTER = new DecimalFormat("00");
 
     private final int year;
     private final int month;
@@ -30,4 +34,16 @@ public class MonthInterval {
         return new MonthInterval(now.getYear(), now.getMonthValue());
     }
 
+    public static MonthInterval parse(String phase) {
+        String[] dateParts = phase.split("-");
+        return new MonthInterval(Integer.valueOf(dateParts[1]), Integer.valueOf(dateParts[0]));
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder(FORMATTER.format(month))
+                .append("-")
+                .append(year)
+                .toString();
+    }
 }
