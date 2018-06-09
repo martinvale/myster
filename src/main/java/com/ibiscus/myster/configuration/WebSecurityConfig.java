@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/shopper/**").hasRole("SHOPPER")
-                .antMatchers("/dashboard/**").hasRole("SHOPPER")
+                //.antMatchers("/dashboard/**").hasRole("SHOPPER")
                 .and()
                     .formLogin()
                     .loginPage("/login")

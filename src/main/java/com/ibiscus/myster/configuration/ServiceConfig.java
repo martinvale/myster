@@ -6,6 +6,7 @@ import com.ibiscus.myster.repository.security.UserRepository;
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.repository.survey.SurveyRepository;
 import com.ibiscus.myster.repository.survey.data.ResponseRepository;
+import com.ibiscus.myster.repository.survey.item.ChoiceRepository;
 import com.ibiscus.myster.repository.survey.item.SurveyItemRepository;
 import com.ibiscus.myster.service.assignment.AssignmentService;
 import com.ibiscus.myster.service.communication.MailSender;
@@ -34,7 +35,8 @@ public class ServiceConfig {
     }
 
     @Bean
-    public ReportService getReportService(JdbcTemplate template) {
-        return new ReportService(template);
+    public ReportService getReportService(JdbcTemplate template, CategoryRepository categoryRepository,
+                                          SurveyItemRepository surveyItemRepository, ChoiceRepository choiceRepository) {
+        return new ReportService(template, categoryRepository, surveyItemRepository, choiceRepository);
     }
 }

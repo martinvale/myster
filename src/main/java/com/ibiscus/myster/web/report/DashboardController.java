@@ -61,6 +61,21 @@ public class DashboardController {
         return "dashboard/general";
     }
 
+    @GetMapping("/survey")
+    public String getSurveyDetail(Model model, Long surveyId, String phase) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        logger.info("Dashboard survey {} detail view for phase {} request by: {}", surveyId, phase, authentication);
+        List<SurveyDto> surveys = surveyService.findAll();
+        model.addAttribute("surveys", surveys);
+        model.addAttribute("phases", getPhases());
+        MonthInterval monthInterval = MonthInterval.parse(phase);
+        model.addAttribute("categoriesSummary", reportService.getAnswerSummary(surveyId, monthInterval));
+        /*SurveyDto surveyDto = surveyService.get(surveyId);
+        MonthInterval monthInterval = MonthInterval.parse(phase);
+        addSummaryToResponse(model, surveyDto, monthInterval);*/
+        return "dashboard/survey";
+    }
+
     private List<String> getPhases() {
         return Lists.newArrayList("05-2018", "06-2018", "07-2018", "08-2018");
     }
