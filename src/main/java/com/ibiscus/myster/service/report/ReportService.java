@@ -60,10 +60,11 @@ public class ReportService {
             "group by c.name, si.position, ch.id\n" +
             "order by c.id, si.position";
 
-    public static final String TOP_PERFORMERS_SQL = "select a.id, pos.name, pos.address, sum(ch.value) as total\n" +
-            "from assignment a, point_of_sale pos, response r, choice ch\n" +
+    public static final String TOP_PERFORMERS_SQL = "select a.id, pos.name, l.address, sum(ch.value) as total\n" +
+            "from assignment a, point_of_sale pos, location l, response r, choice ch\n" +
             "where\n" +
             "\ta.point_of_sale_id = pos.id\n" +
+            "\tand pos.location_id = l.id\n" +
             "\tand a.id = r.assignment_id\n" +
             "\tand r.choice_id = ch.id\n" +
             "\tand a.survey_id = ?\n" +
