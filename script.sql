@@ -66,6 +66,30 @@ create table assignment (
   constraint fk_assignment_point_of_sale foreign key fk_assignment_point_of_sale (point_of_sale_id) references point_of_sale(id)
 );
 
+create table country (
+  id bigint not null auto_increment,
+  name varchar(100) not null,
+  priority int not null default 5,
+  primary key(id)
+);
+
+create table state (
+  id bigint not null auto_increment,
+  name varchar(100) not null,
+  priority int not null default 5,
+  country_id bigint not null,
+  primary key(id),
+  constraint fk_state_country foreign key fk_state_country (country_id) references country(id)
+);
+
+create table location (
+  id bigint not null auto_increment,
+  address varchar(1000) not null,
+  state_id bigint not null,
+  primary key(id),
+  constraint fk_location_state foreign key fk_location_state (state_id) references state(id)
+);
+
 create table company (
   id bigint not null auto_increment,
   name varchar(100) not null,
@@ -100,7 +124,15 @@ insert into shopper (user_id) select id from user where username = 'noelice@msn.
 insert into shopper (user_id) select id from user where username = 'martinvalletta@gmail.com';
 insert into shopper (user_id) select id from user where username = 'jlroffo@shopnchek.com.ar';
 
-insert into company (name) values ('Carrefour Express')
+insert into country (name) values ('Argentina');
+insert into state (name, priority, country_id) select 'Ciudad Autonoma de Buenos Aires', 1, id from country where name = 'Argentina';
+insert into state (name, priority, country_id) select 'Buenos Aires', 2, id from country where name = 'Argentina';
+insert into state (name, country_id) select 'Cordoba', id from country where name = 'Argentina';
+insert into state (name, country_id) select 'Santa Fe', id from country where name = 'Argentina';
+
+insert into company (name) values ('Carrefour Express');
+insert into location (address, state_id) select 'Corrientes 345', id from state where name = 'Ciudad Autonoma de Buenos Aires';
+insert into location (address, state_id) select 'Hidalgo 80', id from state where name = 'Ciudad Autonoma de Buenos Aires';
 insert into point_of_sale (company_id, name, address) select id, 'Congreso', 'Corrientes 345' from company;
 insert into point_of_sale (company_id, name, address) select id, 'Caballito', 'Hidalgo 80' from company;
 

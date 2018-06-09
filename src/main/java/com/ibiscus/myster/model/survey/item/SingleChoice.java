@@ -1,7 +1,5 @@
 package com.ibiscus.myster.model.survey.item;
 
-import com.ibiscus.myster.web.ui.Visitor;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -32,6 +32,17 @@
                     <option th:each="survey : ${surveys}" th:value="${survey.name}" th:text="${survey.name}">Demo survey</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="code">Punto de venta:</label>
+                <div class="row">
+                    <div class="col-xs-2">
+                        <input id="code" type="text" name="code" placeholder="Identificacion" class="form-control" />
+                    </div>
+                    <div class="col-xs-2">
+                        <input id="name" type="text" name="name" placeholder="Nombre" class="form-control" />
+                    </div>
+                </div>
+            </div>
             <button type="submit" class="btn btn-default pull-right">Calcular</button>
         </form>
     </div>

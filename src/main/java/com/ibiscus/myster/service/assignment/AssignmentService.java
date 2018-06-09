@@ -88,7 +88,7 @@ public class AssignmentService {
             if (!assignment.isClosed()) {
                 PointOfSale pointOfSale = assignment.getPointOfSale();
                 assignmentDescriptors.add(new TaskDescription(assignment.getId(), assignment.getSurvey().getName(),
-                        pointOfSale.getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState())));
+                        pointOfSale.getLocation(), assignment.getPayRate(), FINISHED.equals(assignment.getState())));
             }
         }
         return assignmentDescriptors;
@@ -129,7 +129,7 @@ public class AssignmentService {
             taskCategories.add(new CategoryDto(category.getName(), taskItems));
         }
         TaskDescription taskDescription = new TaskDescription(assignmentId, survey.getName(),
-                assignment.getPointOfSale().getAddress(), assignment.getPayRate(), FINISHED.equals(assignment.getState()));
+                assignment.getPointOfSale().getLocation(), assignment.getPayRate(), FINISHED.equals(assignment.getState()));
         java.util.Date visitDate = new java.util.Date();
         if (assignment.getVisitDate() != null) {
             visitDate = new java.util.Date(assignment.getVisitDate().getTime());
@@ -234,7 +234,7 @@ public class AssignmentService {
                 .append(survey.getName())
                 .append("<br/><br/>")
                 .append("Punto de venta: ")
-                .append(pointOfSale.getAddress())
+                .append(pointOfSale.getLocation().getAddress())
                 .append("<br/><br/>")
                 .append("Se puede ver la encuesta completada en el siguiente link: ")
                 .append(siteUrl)
