@@ -36,10 +36,10 @@
                 <label for="code">Punto de venta:</label>
                 <div class="row">
                     <div class="col-xs-2">
-                        <input id="code" type="text" name="code" placeholder="Identificacion" class="form-control" />
+                        <input id="code" type="text" name="code" placeholder="Identificacion" th:value="${code}" class="form-control" />
                     </div>
                     <div class="col-xs-2">
-                        <input id="name" type="text" name="name" placeholder="Nombre" class="form-control" />
+                        <input id="name" type="text" name="name" placeholder="Nombre" th:value="${name}" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 <div class="col-lg-2">
                     <label for="phase">Fase:</label>
                     <select id="phase" name="phase" class="form-control">
-                        <option th:each="phase : ${phases}" th:selected="${phase == selectedPhase}" th:value="${phase}" th:text="${phase}">01-2018</option>
+                        <option th:each="phase : ${phases}" th:selected="${#strings.equals(phase, selectedPhase)}" th:value="${phase}" th:text="${phase}">01-2018</option>
                     </select>
                 </div>
             </div>

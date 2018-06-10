@@ -2,6 +2,8 @@ package com.ibiscus.myster.web.report;
 
 import com.google.common.collect.Lists;
 import com.ibiscus.myster.service.report.MonthInterval;
+import com.ibiscus.myster.service.report.ReportCriteria;
+import com.ibiscus.myster.service.report.ReportCriteriaBuilder;
 import com.ibiscus.myster.service.report.ReportService;
 import com.ibiscus.myster.service.survey.SurveyService;
 import com.ibiscus.myster.web.admin.survey.SurveyDto;
@@ -22,6 +24,8 @@ import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.ibiscus.myster.service.report.MonthInterval.currentMonthInterval;
+import static com.ibiscus.myster.service.report.ReportCriteriaBuilder.newReportCriteriaBuilder;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -36,7 +40,7 @@ public class DashboardController {
     private ReportService reportService;
 
     @GetMapping("/")
-    public String getGeneralView(Model model, Long surveyId, String phase) {
+    public String getGeneralView(Model model, Long surveyId, String code, String name, String phase) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         logger.info("Dashboard general view request by: {}", authentication);
         UserDetails principal = (UserDetails) authentication.getPrincipal();
@@ -44,20 +48,32 @@ public class DashboardController {
         model.addAttribute("surveys", surveys);
         model.addAttribute("phases", getPhases());
         surveys.stream().findFirst()
-                .ifPresent(surveyDto -> addSummaryToResponse(model, surveyDto, currentMonthInterval()));
+                .ifPresent(surveyDto -> addSummaryToResponse(model,
+                        newReportCriteriaBuilder(surveyDto.getId().get()).build()));
         return "dashboard/general";
     }
 
     @GetMapping("/general")
-    public String getSurveySummaryView(Model model, Long surveyId, String phase) {
+    public String getSurveySummaryView(Model model, Long surveyId, String code, String name, String phase) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         logger.info("Dashboard general view request by: {}", authentication);
         List<SurveyDto> surveys = surveyService.findAll();
         model.addAttribute("surveys", surveys);
         model.addAttribute("phases", getPhases());
-        SurveyDto surveyDto = surveyService.get(surveyId);
+        model.addAttribute("selectedSurvey", surveyId);
+        model.addAttribute("selectedPhase", phase);
+        model.addAttribute("code", code);
+        model.addAttribute("name", name);
         MonthInterval monthInterval = MonthInterval.parse(phase);
-        addSummaryToResponse(model, surveyDto, monthInterval);
+        ReportCriteriaBuilder criteriaBuilder = newReportCriteriaBuilder(surveyId)
+                .withInterval(monthInterval);
+        if (!isEmpty(code)) {
+            criteriaBuilder.withCode(code);
+        }
+        if (!isEmpty(name)) {
+            criteriaBuilder.withName(name);
+        }
+        addSummaryToResponse(model, criteriaBuilder.build());
         return "dashboard/general";
     }
 
@@ -80,37 +96,36 @@ public class DashboardController {
         return Lists.newArrayList("05-2018", "06-2018", "07-2018", "08-2018");
     }
 
-    private void addSummaryToResponse(Model model, SurveyDto surveyDto, MonthInterval monthInterval) {
-        model.addAttribute("selectedSurvey", surveyDto.getId().get());
-        model.addAttribute("selectedPhase", monthInterval.toString());
-        model.addAllAttributes(getPhaseSummary(surveyDto.getId().get(), monthInterval));
-        MonthInterval previousMonthInterval = monthInterval.getPreviousMonthInterval();
+    private void addSummaryToResponse(Model model, ReportCriteria criteria) {
+        model.addAttribute("selectedSurvey", criteria.getSurveyId());
+        model.addAttribute("selectedPhase", criteria.getMonthInterval());
+        model.addAllAttributes(getPhaseSummary(criteria));
+        MonthInterval previousMonthInterval = criteria.getMonthInterval().getPreviousMonthInterval();
         model.addAttribute("previousPhase", previousMonthInterval);
-        model.addAllAttributes(getTopPerformers(surveyDto.getId().get(), monthInterval));
+        model.addAllAttributes(getTopPerformers(criteria));
     }
 
-    private Map<String, Object> getTopPerformers(long surveyId, MonthInterval monthInterval) {
+    private Map<String, Object> getTopPerformers(ReportCriteria criteria) {
         Map<String, Object> topPerformersAttribute = newHashMap();
-        topPerformersAttribute.put("topPerformers", reportService.getTopPerformers(surveyId, monthInterval));
+        topPerformersAttribute.put("topPerformers", reportService.getTopPerformers(criteria));
         return topPerformersAttribute;
     }
 
-    private Map<String, Object> getPhaseSummary(long surveyId, MonthInterval monthInterval) {
+    private Map<String, Object> getPhaseSummary(ReportCriteria criteria) {
         Map<String, Object> attributes = newHashMap();
-        attributes.put("currentPhase", monthInterval);
-        List<Map<String, Object>> categorySummaryResult = reportService.getCategorySummary(surveyId,
-                monthInterval);
+        attributes.put("currentPhase", criteria.getMonthInterval());
+        List<Map<String, Object>> categorySummaryResult = reportService.getCategorySummary(criteria);
         attributes.put("categorySummary", categorySummaryResult);
 
-        Integer totalSurvey = reportService.getTotalScore(surveyId);
-        Integer totalPerCategory = categorySummaryResult.stream()
-                .mapToInt(value -> ((BigDecimal) value.get("average")).intValue())
+        Long totalSurvey = reportService.getTotalScore(criteria.getSurveyId());
+        Long totalPerCategory = categorySummaryResult.stream()
+                .mapToLong(value -> ((BigDecimal) value.get("average")).longValue())
                 .sum();
         attributes.put("generalScore", getGeneralScore(totalSurvey, totalPerCategory));
         return attributes;
     }
 
-    private BigDecimal getGeneralScore(Integer totalSurvey, Integer totalPerCategory) {
+    private BigDecimal getGeneralScore(Long totalSurvey, Long totalPerCategory) {
         if (totalSurvey == 0) {
             return BigDecimal.ZERO;
         }

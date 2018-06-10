@@ -16,6 +16,9 @@ import com.ibiscus.myster.service.survey.data.DatastoreService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class ServiceConfig {
@@ -35,8 +38,11 @@ public class ServiceConfig {
     }
 
     @Bean
-    public ReportService getReportService(JdbcTemplate template, CategoryRepository categoryRepository,
-                                          SurveyItemRepository surveyItemRepository, ChoiceRepository choiceRepository) {
-        return new ReportService(template, categoryRepository, surveyItemRepository, choiceRepository);
+    public ReportService getReportService(NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                                          CategoryRepository categoryRepository,
+                                          SurveyItemRepository surveyItemRepository,
+                                          ChoiceRepository choiceRepository) {
+        return new ReportService(namedParameterJdbcTemplate, categoryRepository, surveyItemRepository,
+                choiceRepository);
     }
 }

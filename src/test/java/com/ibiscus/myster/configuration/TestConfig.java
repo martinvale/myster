@@ -6,12 +6,14 @@ import com.ibiscus.myster.repository.security.UserRepository;
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.repository.survey.SurveyRepository;
 import com.ibiscus.myster.repository.survey.data.ResponseRepository;
+import com.ibiscus.myster.repository.survey.item.ChoiceRepository;
 import com.ibiscus.myster.repository.survey.item.SurveyItemRepository;
 import com.ibiscus.myster.service.communication.MailSender;
 import com.ibiscus.myster.service.survey.data.DatastoreService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import static org.mockito.Mockito.mock;
 
@@ -49,6 +51,11 @@ public class TestConfig {
     }
 
     @Bean
+    public ChoiceRepository getChoiceRepository() {
+        return mock(ChoiceRepository.class);
+    }
+
+    @Bean
     public ShopperRepository getShopperRepository() {
         return mock(ShopperRepository.class);
     }
@@ -64,7 +71,7 @@ public class TestConfig {
     }
 
     @Bean
-    public JdbcTemplate getJdbcTemplate() {
-        return mock(JdbcTemplate.class);
+    public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+        return mock(NamedParameterJdbcTemplate.class);
     }
 }
