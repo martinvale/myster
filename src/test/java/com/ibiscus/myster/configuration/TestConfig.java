@@ -2,6 +2,8 @@ package com.ibiscus.myster.configuration;
 
 import com.ibiscus.myster.repository.assignment.AssignmentRepository;
 import com.ibiscus.myster.repository.category.CategoryRepository;
+import com.ibiscus.myster.repository.data.CountryRepository;
+import com.ibiscus.myster.repository.data.StateRepository;
 import com.ibiscus.myster.repository.security.UserRepository;
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.repository.survey.SurveyRepository;
@@ -58,6 +60,16 @@ public class TestConfig {
     @Bean
     public ShopperRepository getShopperRepository() {
         return mock(ShopperRepository.class);
+    }
+
+    @Bean
+    public CountryRepository getCountryRepository() {
+        return mock(CountryRepository.class);
+    }
+
+    @Bean
+    public StateRepository getStateRepository() {
+        return mock(StateRepository.class);
     }
 
     @Bean
