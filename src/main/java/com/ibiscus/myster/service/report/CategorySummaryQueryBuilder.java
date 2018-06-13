@@ -33,7 +33,7 @@ public class CategorySummaryQueryBuilder {
                 .append("\tand a.visit_date < :finalDate\n");
         criteria.getCode().ifPresent(s -> sql.append("\tand pos.code = :code\n"));
         criteria.getName().ifPresent(s -> sql.append("\tand pos.name = :name\n"));
-        sql.append("group by c.name\n");
+        sql.append("group by c.id, c.name\n");
         sql.append("order by c.id");
         return sql.toString();
     }
