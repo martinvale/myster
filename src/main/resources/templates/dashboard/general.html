@@ -57,6 +57,14 @@
                     <div class="col-xs-2">
                         <input id="name" type="text" name="name" placeholder="Nombre" th:value="${name}" class="form-control" />
                     </div>
+                    <div class="col-xs-2">
+                        <select id="country" name="country" class="form-control">
+                            <option th:each="country : ${countries}"
+                                    th:selected="${#strings.equals(country.id, selectedCountry)}"
+                                    th:value="${country.id}"
+                                    th:text="${country.name}">Argentina</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="form-group row">

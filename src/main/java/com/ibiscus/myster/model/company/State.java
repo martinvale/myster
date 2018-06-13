@@ -23,6 +23,10 @@ public class State {
         this.country = country;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -30,4 +34,5 @@ public class State {
     public Country getCountry() {
         return country;
     }
+
 }

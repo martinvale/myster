@@ -2,6 +2,8 @@ package com.ibiscus.myster.configuration;
 
 import com.ibiscus.myster.repository.assignment.AssignmentRepository;
 import com.ibiscus.myster.repository.category.CategoryRepository;
+import com.ibiscus.myster.repository.data.CountryRepository;
+import com.ibiscus.myster.repository.data.StateRepository;
 import com.ibiscus.myster.repository.security.UserRepository;
 import com.ibiscus.myster.repository.shopper.ShopperRepository;
 import com.ibiscus.myster.repository.survey.SurveyRepository;
@@ -10,6 +12,7 @@ import com.ibiscus.myster.repository.survey.item.ChoiceRepository;
 import com.ibiscus.myster.repository.survey.item.SurveyItemRepository;
 import com.ibiscus.myster.service.assignment.AssignmentService;
 import com.ibiscus.myster.service.communication.MailSender;
+import com.ibiscus.myster.service.data.ReferenceDataService;
 import com.ibiscus.myster.service.report.ReportService;
 import com.ibiscus.myster.service.survey.SurveyService;
 import com.ibiscus.myster.service.survey.data.DatastoreService;
@@ -44,5 +47,11 @@ public class ServiceConfig {
                                           ChoiceRepository choiceRepository) {
         return new ReportService(namedParameterJdbcTemplate, categoryRepository, surveyItemRepository,
                 choiceRepository);
+    }
+
+    @Bean
+    public ReferenceDataService getReferenceDataService(CountryRepository countryRepository,
+                                                        StateRepository stateRepository) {
+        return new ReferenceDataService(countryRepository, stateRepository);
     }
 }

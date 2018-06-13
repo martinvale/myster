@@ -1,6 +1,8 @@
 package com.ibiscus.myster.web.report;
 
 import com.google.common.collect.Lists;
+import com.ibiscus.myster.model.company.Country;
+import com.ibiscus.myster.service.data.ReferenceDataService;
 import com.ibiscus.myster.service.report.MonthInterval;
 import com.ibiscus.myster.service.report.ReportCriteria;
 import com.ibiscus.myster.service.report.ReportCriteriaBuilder;
@@ -39,6 +41,9 @@ public class DashboardController {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private ReferenceDataService referenceDataService;
+
     @GetMapping("/")
     public String getGeneralView(Model model, Long surveyId, String code, String name, String phase) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -47,6 +52,7 @@ public class DashboardController {
         List<SurveyDto> surveys = surveyService.findAll();
         model.addAttribute("surveys", surveys);
         model.addAttribute("phases", getPhases());
+        model.addAttribute("countries", getCountries());
         surveys.stream().findFirst()
                 .ifPresent(surveyDto -> addSummaryToResponse(model,
                         newReportCriteriaBuilder(surveyDto.getId().get()).build()));
@@ -131,5 +137,9 @@ public class DashboardController {
         }
         return BigDecimal.valueOf(totalPerCategory).multiply(BigDecimal.valueOf(100))
                 .divide(BigDecimal.valueOf(totalSurvey), 2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    private Iterable<Country> getCountries() {
+        return referenceDataService.getCountries();
     }
 }
