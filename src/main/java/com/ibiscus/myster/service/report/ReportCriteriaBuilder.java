@@ -10,6 +10,7 @@ public class ReportCriteriaBuilder {
     private MonthInterval interval = currentMonthInterval();
     private Optional<String> code = Optional.empty();
     private Optional<String> name = Optional.empty();
+    private Optional<Long> stateId = Optional.empty();
 
     public ReportCriteriaBuilder(Long surveyId) {
         this.surveyId = surveyId;
@@ -19,6 +20,7 @@ public class ReportCriteriaBuilder {
         this.interval = criteria.getMonthInterval();
         this.code = criteria.getCode();
         this.name = criteria.getName();
+        this.stateId = criteria.getStateId();
         return this;
     }
 
@@ -37,8 +39,13 @@ public class ReportCriteriaBuilder {
         return this;
     }
 
+    public ReportCriteriaBuilder withStateId(Long value) {
+        this.stateId = Optional.of(value);
+        return this;
+    }
+
     public ReportCriteria build() {
-        return new ReportCriteria(surveyId, interval, code, name);
+        return new ReportCriteria(surveyId, interval, code, name, stateId);
     }
 
     public static ReportCriteriaBuilder newReportCriteriaBuilder(Long surveyId) {

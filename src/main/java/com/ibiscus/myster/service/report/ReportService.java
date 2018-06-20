@@ -88,6 +88,7 @@ public class ReportService {
         parameters.put("finalDate", criteria.getMonthInterval().getFinalDate());
         criteria.getCode().ifPresent(code -> parameters.put("code", code));
         criteria.getName().ifPresent(name -> parameters.put("name", name));
+        criteria.getStateId().ifPresent(stateId -> parameters.put("stateId", stateId));
         return parameters;
     }
 
@@ -152,6 +153,7 @@ public class ReportService {
                 .append("\tand a.visit_date < :finalDate");
         criteria.getCode().ifPresent(s -> sql.append("\tand pos.code = :code"));
         criteria.getName().ifPresent(s -> sql.append("\tand pos.name = :name"));
+        criteria.getStateId().ifPresent(s -> sql.append("\tand l.state_id = :stateId"));
         sql.append(" group by a.id");
         sql.append(" order by sum(ch.value) desc");
         sql.append(" limit 3");

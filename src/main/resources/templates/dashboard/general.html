@@ -65,6 +65,15 @@
                                     th:text="${country.name}">Argentina</option>
                         </select>
                     </div>
+                    <div class="col-xs-2">
+                        <select id="state" name="stateId" class="form-control">
+                            <option th:selected="${stateId == null}" value="">Todos</option>
+                            <option th:each="state : ${states}"
+                                    th:selected="${#strings.equals(state.id, stateId)}"
+                                    th:value="${state.id}"
+                                    th:text="${state.name}">CABA</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="form-group row">

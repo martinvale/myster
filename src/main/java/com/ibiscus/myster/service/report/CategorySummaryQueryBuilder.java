@@ -16,6 +16,7 @@ public class CategorySummaryQueryBuilder {
                 .append("and a.visit_date < :finalDate");
         criteria.getCode().ifPresent(code -> countQuery.append(" and pos.code = :code"));
         criteria.getName().ifPresent(name -> countQuery.append(" and pos.name = :name"));
+        criteria.getStateId().ifPresent(stateId -> countQuery.append(" and l.state_id = :stateId"));
         StringBuilder sql = new StringBuilder("select c.id, c.name, sum(ch.value) / (")
                 .append(countQuery)
                 .append(") as average\n")
@@ -33,6 +34,7 @@ public class CategorySummaryQueryBuilder {
                 .append("\tand a.visit_date < :finalDate\n");
         criteria.getCode().ifPresent(s -> sql.append("\tand pos.code = :code\n"));
         criteria.getName().ifPresent(s -> sql.append("\tand pos.name = :name\n"));
+        criteria.getStateId().ifPresent(s -> sql.append("\tand l.state_id = :stateId\n"));
         sql.append("group by c.id, c.name\n");
         sql.append("order by c.id");
         return sql.toString();

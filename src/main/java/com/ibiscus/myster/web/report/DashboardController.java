@@ -2,6 +2,7 @@ package com.ibiscus.myster.web.report;
 
 import com.google.common.collect.Lists;
 import com.ibiscus.myster.model.company.Country;
+import com.ibiscus.myster.model.company.State;
 import com.ibiscus.myster.service.data.ReferenceDataService;
 import com.ibiscus.myster.service.report.MonthInterval;
 import com.ibiscus.myster.service.report.ReportCriteria;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static com.ibiscus.myster.service.report.MonthInterval.currentMonthInterval;
 import static com.ibiscus.myster.service.report.ReportCriteriaBuilder.newReportCriteriaBuilder;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -53,6 +53,7 @@ public class DashboardController {
         model.addAttribute("surveys", surveys);
         model.addAttribute("phases", getPhases());
         model.addAttribute("countries", getCountries());
+        model.addAttribute("states", getStates());
         surveys.stream().findFirst()
                 .ifPresent(surveyDto -> addSummaryToResponse(model,
                         newReportCriteriaBuilder(surveyDto.getId().get()).build()));
@@ -60,16 +61,20 @@ public class DashboardController {
     }
 
     @GetMapping("/general")
-    public String getSurveySummaryView(Model model, Long surveyId, String code, String name, String phase) {
+    public String getSurveySummaryView(Model model, Long surveyId, String code, String name, Long stateId,
+                                       String phase) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         logger.info("Dashboard general view request by: {}", authentication);
         List<SurveyDto> surveys = surveyService.findAll();
         model.addAttribute("surveys", surveys);
         model.addAttribute("phases", getPhases());
+        model.addAttribute("countries", getCountries());
+        model.addAttribute("states", getStates());
         model.addAttribute("selectedSurvey", surveyId);
         model.addAttribute("selectedPhase", phase);
         model.addAttribute("code", code);
         model.addAttribute("name", name);
+        model.addAttribute("stateId", stateId);
         MonthInterval monthInterval = MonthInterval.parse(phase);
         ReportCriteriaBuilder criteriaBuilder = newReportCriteriaBuilder(surveyId)
                 .withInterval(monthInterval);
@@ -78,6 +83,9 @@ public class DashboardController {
         }
         if (!isEmpty(name)) {
             criteriaBuilder.withName(name);
+        }
+        if (stateId != null) {
+            criteriaBuilder.withStateId(stateId);
         }
         addSummaryToResponse(model, criteriaBuilder.build());
         return "dashboard/general";
@@ -142,4 +150,9 @@ public class DashboardController {
     private Iterable<Country> getCountries() {
         return referenceDataService.getCountries();
     }
+
+    private Iterable<State> getStates() {
+        return referenceDataService.getStatesByCountry(1L);
+    }
+
 }
